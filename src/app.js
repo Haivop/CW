@@ -23,11 +23,17 @@ app.use(session({
     genid: function(req) {
         return uuidv7(); // use UUIDs for session IDs
     },
+	name: 'cw_rythm_flow_cookie',
 	secret: process.env.SESSION_SECRET,
 	store: sessionStore,
 	resave: false,
 	saveUninitialized: true,
-    cookie: {maxAge: 86400000},
+    cookie: { 
+		path: '/', 
+		httpOnly: true, 
+		secure: false, 
+		maxAge: process.env.SESSION_COOKIE_AGE 
+	},
 }));
 
 sessionStore.onReady().then(() => {
