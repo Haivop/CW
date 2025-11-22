@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%- include('components/header') %>
+
+    <label for="playlists_list">Playlists</label>
+    <ul name="playlists_list">
+        <% playlists.forEach((playlist) => {%>
+            <li>
+                <a href="/playlists/<%=playlist.id%>"><%=[playlist.title]%></a>
+            </li>
+        <%});%>
+    </ul>
+
+    <label for="tracks_list">Tracks</label>
+    <ul name="tracks_list">
+        <% tracks.forEach((track) => {%>
+            <li>
+                <a href="/tracks/<%=track.id%>"><%=[track.title, track.genre, track.artists, Number(track.likes)]%></a>
+            </li>
+        <%});%>
+    </ul>
+</body>
+</html>

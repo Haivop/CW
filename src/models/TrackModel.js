@@ -1,5 +1,5 @@
 const {DataTypes} = require("sequelize");
-const sequelize = require("../db/connection");
+const sequelize = require("../db/sequelize_connection");
 
 const Track = sequelize.define(
     'Tracks',
@@ -15,28 +15,30 @@ const Track = sequelize.define(
             allowNull: false
         },
         title: {
-            type: DataTypes.VARCHAR(50),
+            type: DataTypes.CHAR(50),
             allowNull: false
         },
         artists: {
-            type: DataTypes.VARCHAR(50),
+            type: DataTypes.CHAR(50),
             allowNull: false
-        },
-        year: {
-            type: DataTypes.YEAR,
         },
         genre: {
-            type: DataTypes.VARCHAR(50),
+            type: DataTypes.CHAR(50),
             allowNull: false
         },
+        likes: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+        },
         image_url: {
-            type: DataTypes.VARCHAR(100),
+            type: DataTypes.CHAR(100),
         },
         audio_url: {
-            type: DataTypes.VARCHAR(100),
+            type: DataTypes.CHAR(100),
             allowNull: false
         },
     },
 );
 
+console.log(sequelize.models);
 module.exports = Track;

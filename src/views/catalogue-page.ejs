@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%- include('components/header') %>
+
+    <button onclick="">
+        Create playlist
+    </button>
+
+    <form method="POST" action="/playlists" enctype="multipart/form-data">
+        <label for="title">
+            <p>Title</p>
+            <p></p>
+        </label>
+        <input name="title" type="text">
+
+        <label for="image">
+            <p>Image</p>
+            <p></p>
+        </label>
+        <input name="image" type="file">
+
+        <button type="submit">Створити</button>
+    </form>
+
+    <label for="uploaded_list">Uploaded Tracks</label>
+    <ul name="uploaded_list">
+        <%for(let track of uploaded_tracks){%>
+            <li><a href="tracks/<%=track.id%>"><%=[track.title, track.artists, track.genre]%></a></li>
+        <%};%>
+    </ul>
+
+    <label>Created Playlists</label>
+    <ul>
+        <%for(let playlist of created_playlists){%>
+            <li><a href="playlists/<%=playlist.id%>"><%=[playlist.title]%></a></li>
+        <%};%>
+    </ul>
+</body>
+</html>

@@ -1,6 +1,7 @@
 const express = require("express");
+const CatalogController = require("../controllers/CatalogueController");
 const catalogue = express.Router();
 
-catalogue.get("/catalogue", (req, res) => { res.send("your catalogue")});
+catalogue.get("/", CatalogController.catalogPage);
 
 module.exports = catalogue;

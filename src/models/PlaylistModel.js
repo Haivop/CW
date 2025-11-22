@@ -1,6 +1,6 @@
 const {DataTypes} = require("sequelize");
-const sequelize = require("../db/connection");
-const User = require("./UserModel");
+const sequelize = require("../db/sequelize_connection");
+const Track = require("./TrackModel");
 
 const Playlist = sequelize.define(
     'Playlists',
@@ -16,14 +16,39 @@ const Playlist = sequelize.define(
             allowNull: false,
         },
         title: {
-            type: DataTypes.VARCHAR(50),
+            type: DataTypes.CHAR(50),
             allowNull: false
         },
         image_url: {
-            type: DataTypes.VARCHAR(100)
+            type: DataTypes.CHAR(100)
         }
-    },
-    { timestamps: false }
+    }
 );
 
-module.exports = Playlist;
+const Tracks_in_Playlist = sequelize.define('Tracks_in_Playlists', {
+    TrackId: {
+        type: DataTypes.UUID,
+        field: 'track_id',
+        references: {
+            model: Track,
+            key: 'id'
+        },
+    },
+    PlaylistId: {
+        type: DataTypes.UUID,
+        field: 'playlist_id',
+        references: {
+            model: Playlist,
+            key: 'id'
+        },
+    }
+},
+{
+    timestamps:false,
+});
+
+Playlist.belongsToMany(Track, { through: Tracks_in_Playlist});
+Track.belongsToMany(Playlist, { through: Tracks_in_Playlist});
+
+console.log(sequelize.models);
+module.exports = [Playlist, Tracks_in_Playlist];

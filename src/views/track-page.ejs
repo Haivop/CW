@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%- include('components/header') %>
+
+    <h3><%=track.title%></h3>
+    <p><%=[track.genre, track.artists, track.likes]%></p>
+    <audio controls preload="auto">
+        <source src="<%= track.audio_url %>" type="audio/mpeg">
+    </audio>
+
+    <br>
+    <a href="/profiles/<%=track.owner_id%>">Profile</a>
+</body>
+</html>

@@ -1,9 +1,13 @@
 const express = require("express");
+const TrackController = require("../controllers/TrackController");
+const audioUpload = require("../db/audio_storage");
+
 const track = express.Router();
+track.use(express.static('public'));
 
-track.get("/tracks/:trackId", (req, res) => { res.send("track")});
+track.get("/upload", TrackController.uploadPage);
+track.post("/upload", audioUpload.single('audio_file'), TrackController.uploadTrack);
 
-track.get("/create", (req, res) => { res.send("creation page!")});
-track.post("/create", (req, res) => { res.send("track created")});
+track.get("/:trackId", TrackController.trackPage);
 
 module.exports = track;
