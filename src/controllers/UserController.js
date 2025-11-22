@@ -1,18 +1,16 @@
 const User = require("../models/UserModel");
-const sequelize = require("../db/connection");
+const sequelize = require("../db/sequelize_connection");
 const {Op} = require("sequelize");
-
-await sequelize.sync()
 
 module.exports.loginPage = async (req, res) => {
     res.render('login-page');
 };
 
 module.exports.login = async (req, res, next) => {
-    req.session.regenerate(function(err){
+    req.session.regenerate(async function(err){
         if(err) next(err);
 
-        const user = User.findOne({
+        const user = await User.findOne({
             where:{
                 username:{
                     [Op.eq]: req.body.username,
@@ -37,6 +35,12 @@ module.exports.login = async (req, res, next) => {
             res.redirect("/");
         });
     })
+};
+
+module.exports.accountPage = async (req, res) => {
+    const user = await User.findByPk(req.session.user);
+    console.log(req.session, user);
+    res.render('account-page', { user });
 };
 
 

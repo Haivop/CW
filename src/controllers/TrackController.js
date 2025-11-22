@@ -7,7 +7,7 @@ module.exports.uploadPage = async (req, res) => {
 
 module.exports.uploadTrack = async (req, res) => {
     const {title, genre, artists} = req.body;
-    owner_id = 'b56cf590-c6c1-11f0-b81e-1122d3e5ee76';
+    owner_id = req.session.user;
 
     await Track.create({owner_id, title, artists, genre, audio_url: req.file.path});
 
@@ -19,8 +19,5 @@ module.exports.trackPage = async (req, res) => {
 
     const track = await Track.findByPk(trackId, { raw: true });
 
-    console.log(track);
-
-    res.sendFile(track.audio_url, {root: process.env.rootFiles});
     res.render('track-page', { track });
 };

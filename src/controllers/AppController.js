@@ -14,7 +14,5 @@ module.exports.hubPage = async (req, res) => {
         limit: 10,
     });
 
-    console.log(playlists);
-
     res.render('home-page', { tracks, playlists });
 }; 

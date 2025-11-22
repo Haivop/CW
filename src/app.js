@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const session = require("express-session");
+const {uuidv7} = require("uuidv7");
 const sessionStore = require("./db/sessions_storage");
 const node_process = require('node:process');
 node_process.loadEnvFile("./config/.env");
@@ -19,7 +20,9 @@ app.set('view engine', 'ejs');
 app.set('views', './src/views');
 
 app.use(session({
-    genid,
+    genid: function(req) {
+        return uuidv7(); // use UUIDs for session IDs
+    },
 	secret: process.env.SESSION_SECRET,
 	store: sessionStore,
 	resave: false,
