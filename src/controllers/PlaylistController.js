@@ -4,7 +4,7 @@ const Track = require("../models/TrackModel");
 
 module.exports.createPlaylist = async (req, res) => {
     const {title} = req.body;
-    owner_id = req.session.user;
+    const owner_id = req.session.user;
 
     await Playlist.create({owner_id, title, image_url: req.file.path});
 

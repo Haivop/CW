@@ -7,7 +7,7 @@ module.exports.uploadPage = async (req, res) => {
 
 module.exports.uploadTrack = async (req, res) => {
     const {title, genre, artists} = req.body;
-    owner_id = req.session.user;
+    const owner_id = req.session.user;
 
     await Track.create({owner_id, title, artists, genre, audio_url: req.file.path});
 
