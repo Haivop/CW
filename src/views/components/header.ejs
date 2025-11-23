@@ -2,5 +2,12 @@
     <a href="/">Hub</a>
     <a href="/catalogue">Gatalogue</a>
     <a href="/tracks/upload">Upload</a>
-    <a href="/account">Account</a>
+
+    <% if(loggedIn){%>
+        <a href="/account">Account</a>
+    <%} else{%>
+        <a href="/login">Log In</a>
+        <a href="/sign-up">Sign Up</a>
+    <%};%>
+
 </header>

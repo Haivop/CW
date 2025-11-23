@@ -1,6 +1,7 @@
 const sequelize = require("sequelize");
 const [ Playlist ] = require("../models/PlaylistModel");
 const Track = require("../models/TrackModel");
+const {isLoggedIn} = require("../middleware/authMiddleware");
 
 module.exports.hubPage = async (req, res) => {
     let tracks = await Track.findAll({
@@ -14,5 +15,5 @@ module.exports.hubPage = async (req, res) => {
         limit: 10,
     });
 
-    res.render('home-page', { tracks, playlists });
+    res.render('home-page', { tracks, playlists, loggedIn: isLoggedIn(req)});
 }; 

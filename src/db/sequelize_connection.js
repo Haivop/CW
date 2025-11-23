@@ -4,7 +4,7 @@ const {Sequelize} = require("sequelize");
 const sequelize = new Sequelize('rythm_flow', 'root', 'Ro0t_$v_dB-m7', {
     host: 'localhost',
     dialect: 'mysql',
-    logging: console.log
+    //logging: console.log
 });
 
 (async () => {

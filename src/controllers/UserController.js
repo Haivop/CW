@@ -41,7 +41,7 @@ module.exports.login = async (req, res, next) => {
 module.exports.accountPage = async (req, res) => {
     const user = await User.findByPk(req.session.user);
     console.log(req.session, user);
-    res.render('account-page', { user });
+    res.render('account-page', { user, loggedIn: true});
 };
 
 

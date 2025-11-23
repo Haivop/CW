@@ -1,6 +1,7 @@
 const [ Playlist ] = require("../models/PlaylistModel");
 const sequelize = require("../db/sequelize_connection");
 const sanitizeHtml = require('sanitize-html');
+const {isLoggedIn} = require("../middleware/authMiddleware");
 
 module.exports.createPlaylist = async (req, res) => {
     const path = req.file ? req.file.path : "public\\images\\placeholder.jpeg";
@@ -22,5 +23,5 @@ module.exports.playlistPage = async (req, res) => {
 
     const tracks = await playlist.getTracks({ raw: true });
 
-    res.render('playlist-page', {playlist: playlist.toJSON(), tracks});
+    res.render('playlist-page', {playlist: playlist.toJSON(), tracks, loggedIn: isLoggedIn(req)});
 };

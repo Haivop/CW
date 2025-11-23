@@ -30,5 +30,5 @@ module.exports.catalogPage = async (req, res) => {
         raw: true,
     });
 
-    res.render("catalogue-page", {uploaded_tracks, created_playlists});
+    res.render("catalogue-page", {uploaded_tracks, created_playlists, loggedIn: true});
 };

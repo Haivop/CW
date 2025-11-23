@@ -10,6 +10,14 @@
         <source src="<%= track.audio_url %>" type="audio/mpeg">
     </audio>
 
+    <% if(playlistsContainingTrack){%>
+        <label for="playlists_list"></label>
+        <ul id="playlists_list">
+            <%for(let playlist of playlistsContainingTrack){%>
+                <li><a href="../playlists/<%=playlist.id%>"><%=playlist.title%></a></li>
+            <%};%>
+        </ul>
+    <%};%>
     <br>
     <button>Add to Playlist</button> 
 

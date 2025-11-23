@@ -3,6 +3,7 @@ const sequelize = require("../db/sequelize_connection");
 const sanitizeHtml = require('sanitize-html');
 const [ Playlist ] = require("../models/PlaylistModel");
 const {Op} = require("sequelize");
+const {isLoggedIn} = require("../middleware/authMiddleware");
 
 module.exports.uploadPage = async (req, res) => {
     res.render('upload-page');
@@ -23,7 +24,7 @@ module.exports.uploadTrack = async (req, res) => {
 module.exports.trackPage = async (req, res) => {
     const trackId = req.params.trackId;
 
-    const track = await Track.findByPk(trackId, { raw: true });
+    const track = await Track.findByPk(trackId);
     const playlists = await Playlist.findAll({
         where: {
             owner_id: {
@@ -33,15 +34,36 @@ module.exports.trackPage = async (req, res) => {
         raw: true,
     });
 
-    res.render('track-page', { track, playlists });
+    const playlistsContainingTrack = await track.getPlaylists({raw: true});
+
+    res.render('track-page', { track, playlists, playlistsContainingTrack, loggedIn: isLoggedIn(req)});
 };
 
 module.exports.addTrackToPlaylists = async (req, res) => {
-    console.log(req.body, req.params);
-    
-    for(let id of req.body.playlists){
-        const playlist = await Playlist.findByPk(id);
-        playlist.addTrack(await Track.findByPk(req.params.trackId));
-    }
+    let playlistsIds_Array = [];
+    if(!Array.isArray(req.body.playlists)) playlistsIds_Array.push(req.body.playlists);
+    else playlistsIds_Array = req.body.playlists
 
+    const track_SqlizeObject = await Track.findByPk(req.params.trackId);
+    const playlistsContainingTrack = await track_SqlizeObject.getPlaylists({
+        where: {
+            owner_id:{
+                [Op.eq]: req.session.user,
+            },
+        },
+    });
+
+    for(let playlist of playlistsContainingTrack){
+        if(playlistsIds_Array.includes(playlist.getDataValue("id"))) await track_SqlizeObject.removePlaylist(playlist);
+        playlistsIds_Array = playlistsIds_Array.filter((id) => {
+            return id === playlist.getDataValue("id") ? false : true;
+        });
+    };
+
+    for(let uuid of playlistsIds_Array){
+        const playlist_SqlizeObject = await Playlist.findByPk(uuid);
+        await track_SqlizeObject.addPlaylist(playlist_SqlizeObject);
+    };
+
+    this.trackPage(req, res);
 }
