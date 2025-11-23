@@ -1,0 +1,11 @@
+<input id="search" type="search" placeholder="Search">
+<button onclick="engageSearch()">search</button>
+
+<script>
+    function engageSearch(){
+        const input = document.getElementById("search");
+        window.location.assign("http://localhost:8080/search?q=" + input.value)
+    };
+</script>
+
+<br>

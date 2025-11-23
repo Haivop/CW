@@ -1,6 +1,7 @@
 const User = require("../models/UserModel");
 const sequelize = require("../db/sequelize_connection");
 const {Op} = require("sequelize");
+const sanitizeHtml = require('sanitize-html');
 
 module.exports.loginPage = async (req, res) => {
     res.render('login-page');
@@ -13,16 +14,16 @@ module.exports.login = async (req, res, next) => {
         const user = await User.findOne({
             where:{
                 username:{
-                    [Op.eq]: req.body.username,
+                    [Op.eq]: sanitizeHtml(req.body.username),
                 },
                 password:{
-                    [Op.eq]: req.body.password,
+                    [Op.eq]: sanitizeHtml(req.body.password),
                 },
             },
             raw: true
         });
 
-        if(user == []){
+        if(user == [] || !user || user == null){
             const error = new Error("no such user!");
             error.status = 404;
             next(error);
@@ -32,7 +33,7 @@ module.exports.login = async (req, res, next) => {
 
         req.session.save(function(err){
             if(err) next(err);
-            res.redirect("/");
+            res.redirect('/');
         });
     })
 };
@@ -42,6 +43,8 @@ module.exports.accountPage = async (req, res) => {
     console.log(req.session, user);
     res.render('account-page', { user });
 };
+
+
 
 
 

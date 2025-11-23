@@ -90,8 +90,6 @@ const PlaylistCatalogue = sequelize.define('Playlist_Catalogues', {
 Playlist.belongsToMany(User, {through: PlaylistCatalogue, foreignKey: 'playlist_id', otherKey: 'user_id'});
 User.belongsToMany(Playlist, {through: PlaylistCatalogue, foreignKey: 'user_id', otherKey: 'playlist_id'});
 
-console.log(sequelize.models);
-
 (async () => { await sequelize.sync() })();
 
 module.exports = [LikedTracksCatalogue, PlaylistCatalogue];

@@ -9,5 +9,6 @@ track.get("/upload", isAuthed, TrackController.uploadPage);
 track.post("/upload", isAuthed, audioUpload.single('audio_file'), TrackController.uploadTrack);
 
 track.get("/:trackId", TrackController.trackPage);
+track.post("/:trackId", TrackController.addTrackToPlaylists)
 
 module.exports = track;

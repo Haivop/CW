@@ -1,14 +1,20 @@
 const [ Playlist ] = require("../models/PlaylistModel");
 const sequelize = require("../db/sequelize_connection");
-const Track = require("../models/TrackModel");
+const sanitizeHtml = require('sanitize-html');
 
 module.exports.createPlaylist = async (req, res) => {
-    const {title} = req.body;
+    const path = req.file ? req.file.path : "public\\images\\placeholder.jpeg";
+
+    if(!req.body.title) throw new Error("null title");
+    const title = sanitizeHtml(req.body.title);
+
     const owner_id = req.session.user;
 
-    await Playlist.create({owner_id, title, image_url: req.file.path});
+    console.log(owner_id, title, path);
 
-    res.redirect('/catalogue')
+    await Playlist.create({owner_id, title, image_url: path});
+
+    res.redirect('/catalogue');
 };
 
 module.exports.playlistPage = async (req, res) => {

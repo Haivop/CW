@@ -1,7 +1,8 @@
 <%- include('components/html-head') %>
 <body>
     <%- include('components/header') %>
-
+    <%- include('components/search') %>
+    <img src="../<%=playlist.image_url%>" alt=""> <br>
     <label for="track_list"><%=playlist.title%></label>
     <ul>
         <% for(let track of tracks){%>

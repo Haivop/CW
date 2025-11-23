@@ -1,12 +1,49 @@
 <%- include('components/html-head') %>
 <body>
     <%- include('components/header') %>
-
+    <%- include('components/search') %>
+    
     <h3><%=track.title%></h3>
+    <img src="../<%=track.image_url%>" alt=""> <br>
     <p><%=[track.genre, track.artists, track.likes]%></p>
     <audio controls preload="auto">
         <source src="<%= track.audio_url %>" type="audio/mpeg">
     </audio>
+
+    <br>
+    <button>Add to Playlist</button> 
+
+    <form id="add_track_form" method="POST" action="/tracks/<%=track.id%>">
+        <select multiple name="playlists" id="select_playlists" class="dropdown-menu">
+            <%for(let playlist of playlists){%>
+                <option value="<%=playlist.id%>"><%=playlist.title%></option>
+            <%};%>    
+        </select>
+
+        <button type="submit" onclick="">Add</button>
+    </form>
+
+    <script>
+        async function addTrack() {
+            const playlist_ids = [];
+            for(let option of add_track_form.select_playlists.selectedOptions) {
+                playlist_ids.push(option.value);
+            }
+                
+            if(playlist_ids == []) return;
+
+            let content = { playlists: playlist_ids };
+
+            fetch("http://localhost:8080/playlists/", {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(content)
+                });
+        }
+    </script>
 
     <br>
     <a href="/profiles/<%=track.owner_id%>">Profile</a>

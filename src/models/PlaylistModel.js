@@ -50,5 +50,4 @@ const Tracks_in_Playlist = sequelize.define('Tracks_in_Playlists', {
 Playlist.belongsToMany(Track, { through: Tracks_in_Playlist});
 Track.belongsToMany(Playlist, { through: Tracks_in_Playlist});
 
-console.log(sequelize.models);
 module.exports = [Playlist, Tracks_in_Playlist];

@@ -1,6 +1,5 @@
 const {Op} = require ("sequelize");
 const sequelize = require("../db/sequelize_connection");
-const { LikedTracksCatalogue, PlaylistCatalogue } = require("../models/CataloguesModel");
 const [ Playlist ] = require("../models/PlaylistModel");
 const Track = require("../models/TrackModel");
 

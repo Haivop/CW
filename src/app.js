@@ -13,6 +13,7 @@ const playlistRouter = require("./routes/playlist_routes");
 const trackRouter = require("./routes/track_routes");
 const catalogueRouter = require("./routes/catalogue_routes");
 const AppController = require("./controllers/AppController");
+const {search} = require("./middleware/searchMiddlewere");
 
 app.use(bodyParser.json());
 app.use(express.urlencoded());
@@ -32,7 +33,7 @@ app.use(session({
 		path: '/', 
 		httpOnly: true, 
 		secure: false, 
-		maxAge: process.env.SESSION_COOKIE_AGE 
+		maxAge: 1080000,
 	},
 }));
 
@@ -54,5 +55,6 @@ app.use('/public/images/', express.static(process.env.rootFiles + '/public/image
 
 
 app.get("/", AppController.hubPage);
+app.get("/search", search)
 
 module.exports = app;

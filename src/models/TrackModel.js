@@ -40,5 +40,4 @@ const Track = sequelize.define(
     },
 );
 
-console.log(sequelize.models);
 module.exports = Track;
