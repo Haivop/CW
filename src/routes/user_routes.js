@@ -5,9 +5,10 @@ const { isAuthed } = require("../middleware/authMiddleware");
 
 user.get("/login", UserController.loginPage);
 user.post("/login", UserController.login);
+user.delete("/login", UserController.logOut);
 
-user.get("/sign-up", (req, res) => { res.send("sign-up page")});
-user.post("/sign-up", (req, res) => { res.sed("signed up")});
+user.get("/sign-up", UserController.signUpPage);
+user.post("/sign-up", UserController.signUp);
 
 user.get("/account", isAuthed, UserController.accountPage);
 user.patch("/account", isAuthed, (req, res) => { res.send("your account changed")})

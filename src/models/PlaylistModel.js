@@ -13,7 +13,6 @@ const Playlist = sequelize.define(
         },
         owner_id: {
             type: DataTypes.UUID,
-            allowNull: false,
         },
         title: {
             type: DataTypes.CHAR(50),

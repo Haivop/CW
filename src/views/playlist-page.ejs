@@ -1,13 +1,41 @@
 <%- include('components/html-head') %>
 <body>
     <%- include('components/header') %>
-    <%- include('components/search') %>
+    <%- include('components/search/search') %>
     <img src="../<%=playlist.image_url%>" alt=""> <br>
     <label for="track_list"><%=playlist.title%></label>
     <ul>
         <% for(let track of tracks){%>
-            <li><a href="../tracks/<%=track.id%>"><%=[track.title, track.artists, track.genre]%></a></li>
+            <li isLiked="<%=track.isLiked%>" isOwner="<%=track.isOwner%>" class="track interactable">
+                <a href="../tracks/<%=track.id%>"><%=track.title%></a>
+
+                <% for (artist of track.artists.split(/[,;]/)) {%>
+                    <a href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
+                <%};%>
+
+                <% for (genre of track.genre.split(/[,;]/)) {%>
+                    <a href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
+                <%};%>
+
+                <span><%=track.likes%></span>
+            </li>
+            <audio controls id="<%=track.title%>" src="../tracks/<%=track.audio_url%>"></audio>
         <%};%>
     </ul>
+
+    <button onclick="start()">
+        Start Play
+    </button>
+
+    <button onclick="addPlaylist()">
+        Add Playlist to Catalogue
+    </button>
+
+    <script src="../public/scripts/playlist-func.js"></script>
+
+    <input id="loggin-flag" type="hidden" value="<%=loggedIn%>">
+
+    <script src="../public/scripts/script.js"></script>
+    <%- include('components/contextmenus/track') %>
 </body>
 </html>

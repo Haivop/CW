@@ -52,7 +52,8 @@ app.use("/catalogue", catalogueRouter);
 
 app.use('/tracks/public/audio/', express.static(process.env.rootFiles + '/public/audio'));
 app.use('/public/images/', express.static(process.env.rootFiles + '/public/images'));
-
+app.use('/public/style/', express.static(process.env.rootFiles + '/public/style'));
+app.use('/public/scripts/', express.static(process.env.rootFiles + '/public/scripts'));
 
 app.get("/", AppController.hubPage);
 app.get("/search", search)

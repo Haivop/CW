@@ -1,0 +1,22 @@
+<% if(!(catalogueType.match("none")) && !(catalogueType.match("cr"))){ %>
+<% } else{ %>
+    <label for="created-playlists">Created Playlists</label>
+    <%if(created_playlists.length > 0){%>
+        <ul name="created-playlists">
+            <%for(let playlist of created_playlists){%>
+                <li isSaved="playlist.isSaved" isOwner="<%=playlist.isOwner%>" class="playlist interactable">
+                    <a href="playlists/<%=playlist.id%>">
+                        <%=playlist.title%>
+                    </a>
+                </li>
+            <%};%>
+        </ul>
+    <%} else{%>
+        <p>
+            You haven't created playlists yet...
+        </p>
+    <%};%>
+<% }; %>
+
+
+

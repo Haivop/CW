@@ -5,9 +5,21 @@
 
     <% if(loggedIn){%>
         <a href="/account">Account</a>
+        <button onclick="requsetLogout()">Log Out</button>
     <%} else{%>
         <a href="/login">Log In</a>
         <a href="/sign-up">Sign Up</a>
     <%};%>
 
+    <script>
+        async function requsetLogout() {
+            fetch("http://localhost:8080/login", {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                        'Accept': 'application/json'
+                    },
+            }).then(() => {window.location.reload()});
+        }
+    </script>
 </header>

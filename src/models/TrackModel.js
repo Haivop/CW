@@ -12,7 +12,6 @@ const Track = sequelize.define(
         },
         owner_id: {
             type: DataTypes.UUID,
-            allowNull: false
         },
         title: {
             type: DataTypes.CHAR(50),
@@ -36,6 +35,10 @@ const Track = sequelize.define(
         audio_url: {
             type: DataTypes.CHAR(100),
             allowNull: false
+        },
+        public_flag: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: 0,
         },
     },
 );

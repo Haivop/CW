@@ -1,0 +1,19 @@
+<% if(!(catalogueType.match("none")) && !(catalogueType.match("upl"))) { %>
+<% } else { %>
+    <label for="uploaded-list">Uploaded Tracks</label>
+    <% if(uploaded_tracks.length > 0){ %>
+        <ul name="uploaded_list">
+            <%for(let track of uploaded_tracks){%>
+                <li isLiked="<%=track.isLiked%>" isOwner="<%=track.isOwner%>" class="track interactable">
+                    <a href="tracks/<%=track.id%>">
+                        <%=[track.title, track.artists, track.genre]%>
+                    </a>
+                </li>
+            <%};%>
+        </ul>
+    <% } else{ %>
+        <p>
+            You haven't uploaded tracks yet...
+        </p>
+    <% }; %>
+<% }; %>

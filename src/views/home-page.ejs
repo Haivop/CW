@@ -1,24 +1,59 @@
 <%- include('components/html-head') %>
 <body>
     <%- include('components/header') %>
-    <%- include('components/search') %>
+    <%- include('components/search/search') %>
 
-    <label for="playlists_list">Playlists</label>
-    <ul name="playlists_list">
+    <%- include('components/search/filters') %>
+
+    <h3>Playlists</h3>
+    <ul id="playlists_list">
         <% playlists.forEach((playlist) => {%>
-            <li>
-                <a href="/playlists/<%=playlist.id%>"><%=[playlist.title]%></a>
+            <li isSaved="<%=playlist.isSaved%>" isOwner="<%=playlist.isOwner%>" class="playlist interactable" value="<%=playlist.id%>">
+                <a href="/playlists/<%=playlist.id%>">
+                    <%=[playlist.title]%>
+                </a>
             </li>
         <%});%>
     </ul>
 
-    <label for="tracks_list">Tracks</label>
-    <ul name="tracks_list">
+    <h3>Tracks</h3>
+    <ul id="tracks_list">
         <% tracks.forEach((track) => {%>
-            <li>
-                <a href="/tracks/<%=track.id%>"><%=[track.title, track.genre, track.artists, Number(track.likes)]%></a>
+            <li isLiked="<%=track.isLiked%>" isOwner="<%=track.isOwner%>" class="track interactable" value="<%=track.id%>">
+                <a href="/tracks/<%=track.id%>">
+                    <a href="../tracks/<%=track.id%>"><%=track.title%></a>
+
+                    <% for (artist of track.artists.split(/[,;]/)) {%>
+                        <a href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
+                    <%};%>
+
+                    <% for (genre of track.genre.split(/[,;]/)) {%>
+                        <a href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
+                    <%};%>
+
+                    <span class="like">
+                        <%=Number(track.likes)%>
+                    </span>
+                </a>
             </li>
         <%});%>
     </ul>
+
+    <h3>Profiles</h3>
+    <ul id="profiles_list">
+        <% profiles.forEach((profile) => {%>
+            <li class="profile" value="<%=profile.id%>">
+                <a href="/profiles/<%=profile.id%>">
+                    <%=[profile.username]%>
+                </a>
+            </li>
+        <%});%>
+    </ul>
+
+    <input id="loggin-flag" type="hidden" value="<%=loggedIn%>">
+
+    <script src="../public/scripts/script.js"></script>
+    <%- include('components/contextmenus/playlist') %>
+    <%- include('components/contextmenus/track') %>
 </body>
 </html>

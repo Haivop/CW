@@ -11,10 +11,11 @@ const User = sequelize.define(
         },
         username: {
             type: DataTypes.CHAR(30),
-            allowNull: false
+            allowNull: false,
+            unique: true,
         },
         password:{
-            type: DataTypes.CHAR(20),
+            type: DataTypes.TEXT,
             allowNull: false
         },
         email:{
@@ -23,6 +24,15 @@ const User = sequelize.define(
         },
         avatar_url:{
             type: DataTypes.CHAR(100),
+            defaultValue: "public\\images\\placeholder\\placeholder.jpeg"
+        },
+        block_flag:{
+            type: DataTypes.BOOLEAN,
+            defaultValue: 0
+        },
+        password_salt:{
+            type: DataTypes.CHAR(129),
+            allowNull: false,
         }
     }
 );

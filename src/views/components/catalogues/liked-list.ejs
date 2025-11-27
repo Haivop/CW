@@ -1,0 +1,19 @@
+<% if(!(catalogueType.match("none")) && !(catalogueType.match("lk"))){ %>
+<% } else{ %>
+    <label for="liked-list">Liked Tracks</label>
+    <%if(liked_tracks.length > 0){%>
+        <ul name="liked-list">
+            <%for(let track of liked_tracks){%>
+                <li isLiked="true" isOwner="<%=track.isOwner%>" class="track interactable">
+                    <a href="tracks/<%=track.id%>">
+                        <%=[track.title, track.artists, track.genre]%>
+                    </a>
+                </li>
+            <%};%>
+        </ul>
+    <%} else{%>
+        <p>
+            You haven't liked tracks yet...
+        </p>
+    <%};%>
+<% }; %>

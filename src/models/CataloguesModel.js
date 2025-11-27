@@ -92,4 +92,4 @@ User.belongsToMany(Playlist, {through: PlaylistCatalogue, foreignKey: 'user_id',
 
 (async () => { await sequelize.sync() })();
 
-module.exports = [LikedTracksCatalogue, PlaylistCatalogue];
+module.exports = [ LikedTracksCatalogue, PlaylistCatalogue ];
