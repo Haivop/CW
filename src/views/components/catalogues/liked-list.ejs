@@ -4,9 +4,21 @@
     <%if(liked_tracks.length > 0){%>
         <ul name="liked-list">
             <%for(let track of liked_tracks){%>
-                <li isLiked="true" isOwner="<%=track.isOwner%>" class="track interactable">
-                    <a href="tracks/<%=track.id%>">
-                        <%=[track.title, track.artists, track.genre]%>
+                <li isLiked="<%=track.isLiked%>" isOwner="<%=track.isOwner%>" class="track interactable" value="<%=track.id%>">
+                    <a href="/tracks/<%=track.id%>">
+                        <a href="../search?q=<%=track.title%>&f=tr,"><%=track.title%></a>
+
+                        <% for (artist of track.artists.split(/\s*[,;]\s*/)) {%>
+                            <a href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
+                        <%};%>
+
+                        <% for (genre of track.genres.split(/\s*[,;]\s*/)) {%>
+                            <a href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
+                        <%};%>
+
+                        <span class="like">
+                            <%=Number(track.likes)%>
+                        </span>
                     </a>
                 </li>
             <%};%>

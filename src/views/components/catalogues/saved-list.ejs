@@ -4,8 +4,8 @@
     <%if(saved_playlists.length > 0){%>
         <ul name="saved-playlists">
             <%for(let playlist of saved_playlists){%>
-                <li isSaved="true" isOwner="<%=playlist.isOwner%>" class="playlist interactable">
-                    <a href="playlists/<%=playlist.id%>">
+                <li isSaved="playlist.isSaved" isOwner="<%=playlist.isOwner%>" class="playlist interactable" value="<%=playlist.id%>">
+                    <a href="/playlists/<%=playlist.id%>">
                         <%=playlist.title%>
                     </a>
                 </li>

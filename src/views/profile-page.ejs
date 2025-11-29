@@ -4,27 +4,10 @@
     <%- include('components/search/search') %>
     <%- include('components/catalogues/filters') %>
 
-    <button onclick="">
-        Create playlist
-    </button>
-
-    <form method="POST" action="/playlists" enctype="multipart/form-data">
-        <label for="title">
-            <p>Title</p>
-            <p></p>
-        </label>
-        <input name="title" type="text" required>
-
-        <label for="image">
-            <p>Image</p>
-            <p></p>
-        </label>
-        <input name="image" type="file">
-
-        <button type="submit">Створити</button>
-    </form>
+    <h2 id="profile-name"><%=profile.username%></h2>
+    <img src="../<%=profile.avatar%>" alt="avatar"><br>
     
-    <input id="loggin-flag" type="hidden" value="true">
+    <input id="loggin-flag" type="hidden" value="<%=loggedIn%>">
 
     <%- include("components/catalogues/uploaded-list") %>
     <%- include("components/catalogues/liked-list") %>

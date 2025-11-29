@@ -12,7 +12,7 @@
         <a href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
     <%};%>
 
-    <% for (genre of track.genre.split(/[,;]/)) {%>
+    <% for (genre of track.genres.split(/[,;]/)) {%>
         <a href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
     <%};%>
 
@@ -39,7 +39,20 @@
     <input id="is-liked" type="hidden" value="<%=isLiked%>">
     <button id="like-btn" onclick="like()">Like</button>
 
+    <br>
+
     <button>Add to Playlist</button> 
+
+    <% if(isOwner){ %>
+        <br><button id="edit-btn" onclick="editTrack()">Edit</button><br>
+        <button id="delete-btn" onclick="deleteTrack()">Delete</button><br>
+    <%};%>
+
+    <input id="loggin-flag" type="hidden" value="<%=loggedIn%>">
+    <%- include('components/contextmenus/playlist') %>
+
+    <br>
+    <a href="/profiles/<%=track.owner_id%>">Profile</a>
 
     <form id="add_track_form" method="POST" action="/tracks/<%=track.id%>">
         <select multiple name="playlists" id="select_playlists" class="dropdown-menu">
@@ -51,13 +64,17 @@
         <button type="submit">Add</button>
     </form>
 
-    <input id="loggin-flag" type="hidden" value="<%=loggedIn%>">
+    <div id="edit-track">
+        <input type="text" name="title" id="title-inp" value="<%=track.title%>"> <br>
+        <input type="text" name="artists" id="artists-inp" value="<%=track.artists%>"> <br>
+        <input type="text" name="genres" id="genres-inp" value="<%=track.genres%>"> <br>
+        <input type="checkbox" name="public_flag" id="public-flag-inp" checked=<%=track.public_flag%>> <br>
+        <input type="file" name="image" id="image-inp"> <br>
+
+        <button onclick="sendEdittedTrack()">Edit</button>
+    </div>
 
     <script src="../public/scripts/track-func.js"></script>
     <script src="../public/scripts/script.js"></script>
-    <%- include('components/contextmenus/playlist') %>
-
-    <br>
-    <a href="/profiles/<%=track.owner_id%>">Profile</a>
 </body>
 </html>

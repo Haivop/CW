@@ -9,15 +9,28 @@ module.exports.catalogPage = async (req, res) => {
     const catalogueType = req.query.t == undefined ? "none" : req.query.t;
     const userId = req.session.user;
     
-    let uploaded_tracks = [];
-    let created_playlists = [];
-    let saved_playlists = [];
-    let liked_tracks = [];
+    const {
+        uploaded_tracks, 
+        created_playlists, 
+        saved_playlists, 
+        liked_tracks
+    } = await this.getCataloguesOfUser(userId, catalogueType);
 
+    res.render("catalogue-page", {
+        uploaded_tracks, 
+        created_playlists, 
+        saved_playlists, 
+        liked_tracks, 
+        catalogueType, 
+        loggedIn: true
+    });
+};
+
+module.exports.getCataloguesOfUser = async (userId, catalogueType) => {
     const createdQuery = {
         where: {
             owner_id: {
-                [Op.eq]: req.session.user,
+                [Op.eq]: userId,
             },
         },
         raw: true,
@@ -26,12 +39,17 @@ module.exports.catalogPage = async (req, res) => {
     const savedQuery = {
         where: {
             user_id: {
-                [Op.eq]: req.session.user,
+                [Op.eq]: userId,
             },
         },
         raw: true,
     };
 
+    let uploaded_tracks = [];
+    let created_playlists = [];
+    let saved_playlists = [];
+    let liked_tracks = [];
+    
     if(catalogueType === "none" || catalogueType.match("upl")) {
         uploaded_tracks = await Track.findAll(createdQuery);
         uploaded_tracks.map((track) => {
@@ -57,18 +75,15 @@ module.exports.catalogPage = async (req, res) => {
         });
         uploaded_tracks.map((track) => {
             track.isLiked = liked_tracks.includes(track);
-            console.log(track.isLiked);
         });
-    } 
+    }
 
-    res.render("catalogue-page", {
+    return {
         uploaded_tracks, 
         created_playlists, 
         saved_playlists, 
-        liked_tracks, 
-        catalogueType, 
-        loggedIn: true
-    });
+        liked_tracks
+    };
 };
 
 module.exports.getSavedPlaylists = async function (savedQuery) {

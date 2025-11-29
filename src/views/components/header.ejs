@@ -5,14 +5,14 @@
 
     <% if(loggedIn){%>
         <a href="/account">Account</a>
-        <button onclick="requsetLogout()">Log Out</button>
+        <button onclick="requestLogout()">Log Out</button>
     <%} else{%>
         <a href="/login">Log In</a>
         <a href="/sign-up">Sign Up</a>
     <%};%>
 
     <script>
-        async function requsetLogout() {
+        function requestLogout() {
             fetch("http://localhost:8080/login", {
                     method: 'DELETE',
                     headers: {

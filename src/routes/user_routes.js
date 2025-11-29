@@ -1,5 +1,7 @@
 const express = require("express");
 const user = express.Router();
+
+const imagesUpload = require("../db/images_storage");
 const UserController = require("../controllers/UserController");
 const { isAuthed } = require("../middleware/authMiddleware");
 
@@ -11,8 +13,8 @@ user.get("/sign-up", UserController.signUpPage);
 user.post("/sign-up", UserController.signUp);
 
 user.get("/account", isAuthed, UserController.accountPage);
-user.patch("/account", isAuthed, (req, res) => { res.send("your account changed")})
+user.post("/account", isAuthed, imagesUpload.single('avatar'), UserController.editAccount);
 
-user.get("/profiles/:profileId", (req, res) => { res.send ("profile page")})
+user.get("/profiles/:profileId", UserController.profilePage);
 
 module.exports = user;

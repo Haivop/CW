@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const isOwnerFlag = $(this).attr("isOwner");
         const href = $(this).children("a").attr("href");
 
+        console.log($(this).children("a").attr("href"));
+
         if($(this).hasClass("playlist")) {
             const isSavedFlag = $(this).attr("isSaved");
             const saveContextButton = $("#playlist-menu #save-pl-opt");
@@ -74,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 savePlaylist(href); 
                 break;
             case "download": 
-                alert("download"); 
+                downloadPlaylist(href); 
                 break;
             case "delete": 
                 deletePlaylist(href)
@@ -86,11 +88,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function playPlaylist(href){
-    window.location.assign(base_url + href);
+    window.location.assign(base_url.concat(href));
 }
 
-async function downloadPlaylist(){
-    
+async function downloadPlaylist(href){
+    window.location.href = href.concat("/download");
 }
 
 async function savePlaylist(href){

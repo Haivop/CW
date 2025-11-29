@@ -1,5 +1,10 @@
 const sanitizeHtml = require('sanitize-html');
 const {Op} = require ("sequelize");
+const node_process = require('node:process');
+node_process.loadEnvFile("./config/.env");
+const zip = require('adm-zip');
+const fs = require('node:fs');
+const AdmZip = require('adm-zip');
 
 const sequelize = require("../db/sequelize_connection");
 const [ Playlist ] = require("../models/PlaylistModel");
@@ -8,6 +13,8 @@ const [ , PlaylistCatalogue ] = require("../models/CataloguesModel");
 const {isLoggedIn} = require("../middleware/authMiddleware");
 
 const { getLikedTracks } = require("../controllers/CatalogueController");
+const { mergePatch } = require("../middleware/utility");
+
 
 module.exports.createPlaylist = async (req, res) => {
     const path = req.file ? req.file.path : "public\\images\\placeholder\\placeholder.jpeg";
@@ -40,6 +47,7 @@ module.exports.deletePlaylist = async (req, res) => {
     else res.status(204);
 };
 
+
 module.exports.playlistPage = async (req, res) => {
     const playlist = await Playlist.findByPk(req.params.playlistId);
 
@@ -53,11 +61,34 @@ module.exports.playlistPage = async (req, res) => {
         raw: true
     });
 
-    tracks.map((track) => {
-        track.isLiked = likedTracks.includes(track);
-    })
+    tracks.filter((track) => { track.public_flag === true });
 
-    res.render('playlist-page', {playlist: playlist.toJSON(), tracks, loggedIn: isLoggedIn(req)});
+    tracks.map((track) => { track.isLiked = likedTracks.includes(track) });
+
+    const isOwner = req.session.user === playlist.owner_id ? true : false;
+
+    console.log(isOwner);
+
+    res.render('playlist-page', {playlist: playlist.toJSON(), tracks, loggedIn: await isLoggedIn(req), isOwner});
+};
+
+
+module.exports.downloadPlaylist = async (req, res) => {
+    const playlist = await Playlist.findByPk(req.params.playlistId);
+    const tracks = await playlist.getTracks({ raw: true });
+    const zipper = new AdmZip();
+
+    for(let track of tracks){
+        zipper.addLocalFile(process.env.rootFiles + track.audio_url);
+    }
+
+    const temp_file_path = process.env.rootFiles + "public\\temp\\download_playlist" + Date.now() + ".zip";
+    zipper.writeZip(temp_file_path);
+
+    res.setHeader('Content-type','application/zip');
+    res.sendFile(temp_file_path);
+
+    fs.unlinkSync(temp_file_path);
 };
 
 module.exports.addPlaylistToCatalogue = async (req, res) => {
@@ -84,6 +115,24 @@ module.exports.addPlaylistToCatalogue = async (req, res) => {
 
         res.status(200);
     }
+};
+
+module.exports.editPlaylist = async (req, res) => {
+    const userId = req.session.user;
+    const playlistId = sanitizeHtml(req.params.playlistId);
+    let playlist = await Playlist.findByPk(playlistId);
+
+    if(playlist.owner_id !== userId) res.end();
+
+    if(!req.file) delete req.body.image;
+
+    const newPlaylistData = req.body;
+    newPlaylistData.image_url = req.file ? req.file.path : null;
+
+    playlist = await mergePatch(newPlaylistData, playlist);
+    playlist.save();
+
+    if(playlist.owner_id === userId) res.end();
 };
 
 deletePlaylistFromCatalogue = async (req, res) => {

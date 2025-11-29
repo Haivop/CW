@@ -21,13 +21,13 @@
         <% tracks.forEach((track) => {%>
             <li isLiked="<%=track.isLiked%>" isOwner="<%=track.isOwner%>" class="track interactable" value="<%=track.id%>">
                 <a href="/tracks/<%=track.id%>">
-                    <a href="../tracks/<%=track.id%>"><%=track.title%></a>
+                    <a href="../search?q=<%=track.title%>&f=tr,"><%=track.title%></a>
 
-                    <% for (artist of track.artists.split(/[,;]/)) {%>
+                    <% for (artist of track.artists.split(/\s*[,;]\s*/)) {%>
                         <a href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
                     <%};%>
 
-                    <% for (genre of track.genre.split(/[,;]/)) {%>
+                    <% for (genre of track.genres.split(/\s*[,;]\s*/)) {%>
                         <a href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
                     <%};%>
 

@@ -4,5 +4,63 @@
     <%- include('components/search/search') %>
 
     <h2>Welcome to your Account Page, <%=user.username%></h2>
+    <img src="<%=user.avatar_url%>" alt="">
+    <h2><%=user.username%></h2>
+
+    <button onclick="editAccount()">Edit</button><br>
+    <form method="post" action="/account" enctype="multipart/form-data">
+        <label for="username">username</label>
+        <input name="username" id="username" type="text">
+
+        <label for="avatar">avatar image</label>
+        <input name="avatar" id="avatar" type="file"> <br>
+
+        <button type="submit">Submit</button>
+    </form>
+    
+    <section>
+        <h3>Genres Top5</h3>
+        <ul>
+            <%for(let genre of top5Genres){%>
+                <li>
+                    <a href="./search?q=<%=genre[0]%>&f=gn">
+                        <%=genre[0]%>
+                    </a>
+                </li>
+            <%};%>
+        </ul>
+
+        <h3>Artists Top5</h3>
+        <ul>
+            <%for(let artist of top5Artists){%>
+                <li>
+                    <a href="./search?q=<%=artist[0]%>&f=ar">
+                        <%=artist[0]%>
+                    </a>
+                </li>
+            <%};%>
+        </ul>
+
+        <h3>Tracks Top5</h3>
+        <ul>
+            <% for(let track of top5Tracks){%>
+                <li isLiked="true" isOwner="<%=track.isOwner%>" class="track interactable">
+                    <a href="../tracks/<%=track.id%>"><%=track.title%></a>
+
+                    <% for (artist of track.artists) {%>
+                        <a href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
+                    <%};%>
+
+                    <% for (genre of track.genres) {%>
+                        <a href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
+                    <%};%>
+
+                    <span><%=track.likes%></span>
+                </li>
+            <%};%>
+        </ul>
+    </section>
+
+    <script src="../public/scripts/account-func.js"></script>
 </body>
 </html>

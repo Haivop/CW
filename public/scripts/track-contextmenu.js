@@ -65,16 +65,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const href = $(this).parent("ul").attr("value");
         switch($(this).attr("data-action")) {
             case "play": 
-                alert("play"); 
+                playTrack(href); 
                 break;
             case "like": 
-                alert("like"); 
+                likeTrack(href); 
                 break;
             case "download": 
-                deleteTrack(href); 
+                downloadTrack(href); 
                 break;
             case "delete": 
-                alert("delete"); 
+                deleteTrack(href); 
                 break;
         };
     
@@ -82,18 +82,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-async function playTrack(){
-
+async function playTrack(href){
+    window.location.assign(base_url.concat(href));
 }
 
-async function likeTrack(){
+async function likeTrack(href){
     fetch(base_url + href, {
         method: "PATCH"
     }).then((Response) => console.log(Response.status));
+    window.location.reload();
 }
 
-async function downloadTrack(){
-    
+async function downloadTrack(href){
+    console.log(href.concat("/download"));
+    window.location.href = href.concat("/download");
 }
 
 async function deleteTrack(href){

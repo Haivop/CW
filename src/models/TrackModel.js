@@ -21,7 +21,7 @@ const Track = sequelize.define(
             type: DataTypes.CHAR(50),
             allowNull: false
         },
-        genre: {
+        genres: {
             type: DataTypes.CHAR(50),
             allowNull: false
         },

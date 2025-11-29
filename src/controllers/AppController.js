@@ -9,6 +9,9 @@ const { getLikedTracks, getSavedPlaylists } = require("../controllers/CatalogueC
 
 module.exports.hubPage = async (req, res) => {
     const tracks = await Track.findAll({
+        where: {
+            public_flag: true,
+        },
         raw: true,
         order: sequelize.col('likes'),
         limit: 10,

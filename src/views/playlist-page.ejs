@@ -7,29 +7,64 @@
     <ul>
         <% for(let track of tracks){%>
             <li isLiked="<%=track.isLiked%>" isOwner="<%=track.isOwner%>" class="track interactable">
-                <a href="../tracks/<%=track.id%>"><%=track.title%></a>
+                <a href="/tracks/<%=track.id%>"><%=track.title%></a>
 
-                <% for (artist of track.artists.split(/[,;]/)) {%>
+                <% for (artist of track.artists.split(/\s*[,;]\s*/)) {%>
                     <a href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
                 <%};%>
 
-                <% for (genre of track.genre.split(/[,;]/)) {%>
+                <% for (genre of track.genres.split(/\s*[,;]\s*/)) {%>
                     <a href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
                 <%};%>
 
                 <span><%=track.likes%></span>
+
+                <audio class="track in-playlist" src="../tracks/<%=track.audio_url%>"></audio>
+
+                <%if(isOwner){%>
+                <button onclick="removeFromPlaylist(`<%=playlist.id%>`, `<%=track.id%>`)">Remove</button>
+                <%};%>
             </li>
-            <audio controls id="<%=track.title%>" src="../tracks/<%=track.audio_url%>"></audio>
         <%};%>
     </ul>
 
-    <button onclick="start()">
-        Start Play
+    <button id="forward">
+        Forward
     </button>
+    <button id="start-playback" activated=false>
+        Start Play
+    </button> 
+    <button id="backward">
+        Backward
+    </button><br>
 
+    <button onclick="downloadPlaylist(window.location.href + `/download`)">
+        Download
+    </button> <br>
+
+    <% if(loggedIn){ %>
     <button onclick="addPlaylist()">
         Add Playlist to Catalogue
-    </button>
+    </button> <br>
+    <%};%>
+
+    <% if(isOwner){ %>
+    <button onclick="editPlaylist()">
+        Edit
+    </button> <br>
+
+    <button onclick="deletePlaylist()">
+        Delete
+    </button> <br>
+    <%};%>
+    
+
+    <div id="edit-playlist">
+        <input type="text" name="title" id="title-inp" value="<%=playlist.title%>"> <br>
+        <input type="file" name="image" id="image-inp"> <br>
+
+        <button onclick="sendEdittedPlaylist()">Edit</button>
+    </div>
 
     <script src="../public/scripts/playlist-func.js"></script>
 
