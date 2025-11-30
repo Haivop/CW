@@ -1,44 +1,45 @@
 <%- include('components/html-head') %>
 <body>
     <%- include('components/header') %>
-    <%- include('components/search/search') %>
 
-    <form method="POST" action="/tracks/upload" enctype="multipart/form-data">
-        <label for="title">
-            <p>Title</p>
-            <p></p>
-        </label>
-        <input name="title" type="text" required>
+    <div id="upload-track">
+        <form method="POST" action="/tracks/upload" enctype="multipart/form-data">
+            <label for="title">
+                <p>Title</p>
+                <p></p>
+            </label>
+            <input name="title" type="text" required>
 
-        <label for="genre">
-            <p>Genre</p>
-            <p></p>
-        </label>
-        <input name="genre" type="text" required>
+            <label for="genre">
+                <p>Genre</p>
+                <p></p>
+            </label>
+            <input name="genre" type="text" required>
 
-        <label for="artists">
-            <p>Artists</p>
-            <p></p>
-        </label>
-        <input name="artists" type="text" required>
+            <label for="artists">
+                <p>Artists</p>
+                <p></p>
+            </label>
+            <input name="artists" type="text" required>
 
-        <label for="audio_file">
-            <p>Audio file</p>
-            <p></p>
-        </label>
-        <input name="audio_file" type="file" required>
+            <label for="audio_file">
+                <p>Audio file</p>
+                <p></p>
+            </label>
+            <input name="audio_file" type="file" required>
 
-        <label for="image_file">
-            <p>Track Image (if any)</p>
-            <p></p>
-        </label>
-        <input name="image_file" type="file">
+            <label for="image_file">
+                <p>Track Image (if any)</p>
+                <p></p>
+            </label>
+            <input name="image_file" type="file">
 
-        <br>
+            <br>
 
-        <button type="submit">Upload</button>
-    </form>
+            <button class="btn" type="submit">Upload</button>
+        </form>
 
-    <a href="/">Cancel</a>
+        <a href="/">Cancel</a>
+    </div>
 </body>
 </html>

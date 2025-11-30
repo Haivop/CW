@@ -1,31 +1,38 @@
 <% if(!(catalogueType.match("none")) && !(catalogueType.match("upl"))) { %>
 <% } else { %>
-    <label for="uploaded-list">Uploaded Tracks</label>
-    <% if(uploaded_tracks.length > 0){ %>
-        <ul name="uploaded_list">
-            <%for(let track of uploaded_tracks){%>
-                <li isLiked="<%=track.isLiked%>" isOwner="<%=track.isOwner%>" class="track interactable" value="<%=track.id%>">
-                    <a href="/tracks/<%=track.id%>">
-                        <a href="../search?q=<%=track.title%>&f=tr,"><%=track.title%></a>
+    <div class="container">
+        <h2>Uploaded Tracks</h2>
+        <% if(uploaded_tracks.length > 0){ %>
+            <ul name="uploaded_list">
+                <%for(let track of uploaded_tracks){%>
+                    <li isLiked="<%=track.isLiked%>" isOwner="<%=track.isOwner%>" class="box track interactable" value="<%=track.id%>">
+                        <div class="left">
+                            <img class="list-item-img" src="../<%=track.image_url%>" alt="">
+                        
+                            <a class="title" href="../search?q=<%=track.title%>&f=tr,"> <%=track.title%> </a> <br>
 
-                        <% for (artist of track.artists.split(/\s*[,;]\s*/)) {%>
-                            <a href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
-                        <%};%>
+                            <% let counter = 0;%>
+                            <% for (artist of track.artists.split(/\s*[,;]\s*/)) {%>
+                                <a class="artists" href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
+                                <% if(counter === 3) break;%>
+                                <% counter++; %>
+                            <%};%>
+                        </div>
+                            
+                        <div class="right">
+                            <% for (genre of track.genres.split(/\s*[,;]\s*/)) {%>
+                            <a class="genres" href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
+                            <%};%>
 
-                        <% for (genre of track.genres.split(/\s*[,;]\s*/)) {%>
-                            <a href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
-                        <%};%>
-
-                        <span class="like">
-                            <%=Number(track.likes)%>
-                        </span>
-                    </a>
-                </li>
-            <%};%>
-        </ul>
-    <% } else{ %>
-        <p>
-            You haven't uploaded tracks yet...
-        </p>
-    <% }; %>
+                            <span class="likes"><%=Number(track.likes)%></span>
+                        </div>
+                    </li>
+                <%};%>
+            </ul>
+        <% } else{ %>
+            <p>
+                You haven't uploaded tracks yet...
+            </p>
+        <% }; %>
+    </div>
 <% }; %>

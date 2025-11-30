@@ -16,5 +16,6 @@ user.get("/account", isAuthed, UserController.accountPage);
 user.post("/account", isAuthed, imagesUpload.single('avatar'), UserController.editAccount);
 
 user.get("/profiles/:profileId", UserController.profilePage);
+user.delete("/profiles/:profileId", UserController.deleteUser);
 
 module.exports = user;

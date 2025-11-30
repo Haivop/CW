@@ -42,6 +42,10 @@ async function downloadPlaylist(href) {
     window.location.href = href;
 };
 
+async function deletePlaylist(){
+    
+}
+
 async function sendEdittedPlaylist(){
     const formData = new FormData();
 
@@ -134,3 +138,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 });
 
+function editPlaylist(){
+    $("#edit-playlist").toggle(100);
+    $("#overlay").toggle(1);
+}
+
+$(document).bind("mousedown", function (e) {
+    if (!$(e.target).parents("#edit-playlist").length > 0) {
+        $("#edit-playlist").hide(100);
+        $("#overlay").hide(1);
+    };
+});

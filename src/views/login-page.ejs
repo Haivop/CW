@@ -6,20 +6,23 @@
             <div id="login-form">
                 <h2 class="yellowtail-regular login-header">RythmFlow</h2>
                 <form method="POST" action="/login">
-                    <label for="username">Username</label>
-                    <input name="username" type="text" required>
+                    <label for="username">Username*</label>
+                    <input name="username" type="text" required autocomplete="off">
 
-                    <br>
-
-                    <label for="password">Password</label>
-                    <input name="password" type="text" required>
-
-                    <br>
-
-                    <button class="btn" type="submit">Log In</button>
+                    <label for="password">Password*</label>
+                    <input name="password" class="inputField" type="password" required autocomplete="off">
+                    
+                    <div class="btn-menu">
+                        <button class="btn" type="submit">Log In</button>
+                        <button class="btn" type="button" onclick="register()">Register</button>
+                        <button class="btn" type="button" onclick="prevPage()">Cancel</button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <script src="../public/scripts/base_url.js"></script>
+    <script src="../public/scripts/script.js"></script>
 </body>
 </html>

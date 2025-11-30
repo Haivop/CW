@@ -1,66 +1,73 @@
 <%- include('components/html-head') %>
 <body>
     <%- include('components/header') %>
-    <%- include('components/search/search') %>
 
-    <h2>Welcome to your Account Page, <%=user.username%></h2>
-    <img src="<%=user.avatar_url%>" alt="">
-    <h2><%=user.username%></h2>
+    <div id="user-grid" class="mr-top-bottom">
+        <img id="profile-avatar" class="image avatar on-page" src="<%=user.avatar_url%>" alt="">
+        <h2 class="profile-name"><%=user.username%><button class="btn" onclick="editAccount()">Edit</button></h2><br>
 
-    <button onclick="editAccount()">Edit</button><br>
-    <form method="post" action="/account" enctype="multipart/form-data">
-        <label for="username">username</label>
-        <input name="username" id="username" type="text">
+        <div id="tracks-chart">
+            <h3>Tracks Top5</h3>
+            <ul>
+                <% for(let track of top5Tracks){%>
+                    <li isLiked="true" isOwner="<%=track.isOwner%>" class="track interactable">
+                        <a href="../tracks/<%=track.id%>"><%=track.title%></a>
 
-        <label for="avatar">avatar image</label>
+                        <% for (artist of track.artists) {%>
+                            <a href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
+                        <%};%>
+
+                        <% for (genre of track.genres) {%>
+                            <a href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
+                        <%};%>
+
+                        <span><%=track.likes%></span>
+                    </li>
+                <%};%>
+            </ul>
+        </div>
+
+        <div id="genres-chart">
+            <h3>Genres Top5</h3>
+            <ul>
+                <%for(let genre of top5Genres){%>
+                    <li>
+                        <a href="./search?q=<%=genre[0]%>&f=gn">
+                            <%=genre[0]%>
+                        </a>
+                    </li>
+                <%};%>
+            </ul>
+        </div>
+
+        <div id="artists-chart">
+            <h3>Artists Top5</h3>
+            <ul>
+                <%for(let artist of top5Artists){%>
+                    <li>
+                        <a href="./search?q=<%=artist[0]%>&f=ar">
+                            <%=artist[0]%>
+                        </a>
+                    </li>
+                <%};%>
+            </ul>
+        </div>
+    </div>
+    
+    <form id="edit-account" class="centered-pop-up" method="post" action="/account" enctype="multipart/form-data">
+        <label for="username">Username</label>
+        <input name="username" id="username" type="text" autocomplete="off"> <br>
+
+        <label for="avatar">Avatar image</label> <br>
         <input name="avatar" id="avatar" type="file"> <br>
 
-        <button type="submit">Submit</button>
+        <button class="btn" type="submit">Submit</button>
     </form>
+
+    <div id="overlay" class="overlay hidden"></div>
     
-    <section>
-        <h3>Genres Top5</h3>
-        <ul>
-            <%for(let genre of top5Genres){%>
-                <li>
-                    <a href="./search?q=<%=genre[0]%>&f=gn">
-                        <%=genre[0]%>
-                    </a>
-                </li>
-            <%};%>
-        </ul>
-
-        <h3>Artists Top5</h3>
-        <ul>
-            <%for(let artist of top5Artists){%>
-                <li>
-                    <a href="./search?q=<%=artist[0]%>&f=ar">
-                        <%=artist[0]%>
-                    </a>
-                </li>
-            <%};%>
-        </ul>
-
-        <h3>Tracks Top5</h3>
-        <ul>
-            <% for(let track of top5Tracks){%>
-                <li isLiked="true" isOwner="<%=track.isOwner%>" class="track interactable">
-                    <a href="../tracks/<%=track.id%>"><%=track.title%></a>
-
-                    <% for (artist of track.artists) {%>
-                        <a href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
-                    <%};%>
-
-                    <% for (genre of track.genres) {%>
-                        <a href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
-                    <%};%>
-
-                    <span><%=track.likes%></span>
-                </li>
-            <%};%>
-        </ul>
-    </section>
-
+    <script src="../public/scripts/base_url.js"></script>
+    <script src="../public/scripts/script.js"></script>
     <script src="../public/scripts/account-func.js"></script>
 </body>
 </html>

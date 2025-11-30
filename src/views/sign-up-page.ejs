@@ -1,16 +1,30 @@
 <%- include('components/html-head') %>
 <body>
-    <form method="POST" action="/sign-up">
-        <label for="username">username</label>
-        <input name="username" type="text" required>
+    <div class="login-grid">
+        <div></div>
+        <div>
+            <div id="login-form">
+                <h2 class="yellowtail-regular login-header">RythmFlow</h2>
+                <form method="POST" action="/sign-up">
+                    <label for="username">Username*</label>
+                    <input name="username" type="text" required autocomplete="off">
 
-        <label for="email">email</label>
-        <input name="email" type="email" required>
+                    <label for="email">Email*</label>
+                    <input name="email" type="email" required autocomplete="off">
 
-        <label for="password">password</label>
-        <input name="password" type="password" required>
-
-        <button type="submit">Log In</button>
-    </form>
+                    <label for="password">Password*</label>
+                    <input name="password" type="password" required autocomplete="off">
+                    
+                    <div class="btn-menu">
+                        <button class="btn" type="submit">Sign Up</button>
+                        <button class="btn" type="button" onclick="prevPage()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../public/scripts/base_url.js"></script>
+    <script src="../public/scripts/script.js"></script>
 </body>
 </html>

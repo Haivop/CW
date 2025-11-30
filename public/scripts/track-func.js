@@ -6,12 +6,12 @@ async function like() {
 
 async function addTrackToPlaylists() {
     $("#add-track-form").toggle(100);
-    $("#overlay").toggle(100);
+    $("#overlay").toggle(1);
 }
 
 async function editTrack() {
     $("#edit-track").toggle(100);
-    $("#overlay").toggle(100);
+    $("#overlay").toggle(1);
 }
 
 $(document).bind("mousedown", function (e) {
@@ -23,7 +23,7 @@ $(document).bind("mousedown", function (e) {
     };
 
     if (!$(e.target).parents("#edit-track").length > 0 && !$(e.target).parents("#add-track-form").length > 0){
-        $("#overlay").hide(100);
+        $("#overlay").hide(1);
     };
 });
 

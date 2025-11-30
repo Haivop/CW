@@ -195,6 +195,24 @@ module.exports.editAccount = async (req, res) => {
     res.redirect(req.originalUrl);
 };
 
+module.exports.blockUser = async (req, res) => {
+    const profileId = sanitizeHtml(req.params.profileId);
+    const user = await User.findByPk(profileId);
+
+    user.block_flag = user.block_flag === 0 ? 1 : 0;
+    user.save();
+    
+    res.end()
+};
+
+module.exports.deleteUser = async (req, res) => {
+    const profileId = sanitizeHtml(req.params.profileId);
+    const user = await User.findByPk(profileId);
+
+    user.destroy();
+
+    res.end();
+};
 
 
 

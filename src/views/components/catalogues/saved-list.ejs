@@ -1,19 +1,23 @@
 <% if(!(catalogueType.match("none")) && !(catalogueType.match("sv"))){ %>
 <% } else{ %>
-    <label for="saved-playlists">Saved Playlists</label>
-    <%if(saved_playlists.length > 0){%>
-        <ul name="saved-playlists">
-            <%for(let playlist of saved_playlists){%>
-                <li isSaved="playlist.isSaved" isOwner="<%=playlist.isOwner%>" class="playlist interactable" value="<%=playlist.id%>">
-                    <a href="/playlists/<%=playlist.id%>">
-                        <%=playlist.title%>
-                    </a>
-                </li>
-            <%};%>
-        </ul>
-    <%} else{%>
-        <p>
-            You haven't saved playlists yet...
-        </p>
-    <%};%>
+    <div class="container">
+        <h2>Saved Playlists</h2>
+        <%if(saved_playlists.length > 0){%>
+            <ul name="saved-playlists">
+                <%for(let playlist of saved_playlists){%>
+                    <li isSaved="playlist.isSaved" isOwner="<%=playlist.isOwner%>" class="box playlist interactable" value="<%=playlist.id%>">
+                        <img class="list-item-img" src="../<%=playlist.image_url%>" alt="">
+                        <a class="title" href="/playlists/<%=playlist.id%>">
+                            <%=playlist.title%>
+                        </a>
+                    </li>
+                <%};%>
+            </ul>
+        <%} else{%>
+            <p>
+                You haven't saved playlists yet...
+            </p>
+        <%};%>
+    </div>
+    
 <% }; %>

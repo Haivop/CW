@@ -1,19 +1,30 @@
 <%- include('components/html-head') %>
 <body>
     <%- include('components/header') %>
-    <%- include('components/search/search') %>
-    <%- include('components/catalogues/filters') %>
 
-    <h2 id="profile-name"><%=profile.username%></h2>
-    <img src="../<%=profile.avatar%>" alt="avatar"><br>
+    <div class="grid-col-2 mr">
+        <div class="flex-row">
+            <div>
+                <img id="profile-avatar" class="image avatar on-page mr" src="../<%=profile.avatar%>" alt="avatar">
+            </div>
+
+            <div class="flex-col">
+                <h2 id="profile-name" class="mr-left"><%=profile.username%></h2>
+                <%- include('components/catalogues/filters') %>
+            </div>
+            
+        </div>
+        <div>
+            <input id="loggin-flag" type="hidden" value="<%=loggedIn%>">
+            <%- include("components/catalogues/uploaded-list") %>
+            <%- include("components/catalogues/liked-list") %>
+            <%- include("components/catalogues/created-list") %>
+            <%- include("components/catalogues/saved-list") %>
+        </div>
+    </div>
     
-    <input id="loggin-flag" type="hidden" value="<%=loggedIn%>">
 
-    <%- include("components/catalogues/uploaded-list") %>
-    <%- include("components/catalogues/liked-list") %>
-    <%- include("components/catalogues/created-list") %>
-    <%- include("components/catalogues/saved-list") %>
-
+    <script src="../public/scripts/base_url.js"></script>
     <script src="../public/scripts/script.js"></script>
     <%- include('components/contextmenus/playlist') %>
     <%- include('components/contextmenus/track') %>

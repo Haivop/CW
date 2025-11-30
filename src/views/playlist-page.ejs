@@ -1,76 +1,95 @@
 <%- include('components/html-head') %>
 <body>
     <%- include('components/header') %>
-    <%- include('components/search/search') %>
-    <img src="../<%=playlist.image_url%>" alt=""> <br>
-    <label for="track_list"><%=playlist.title%></label>
-    <ul>
-        <% for(let track of tracks){%>
-            <li isLiked="<%=track.isLiked%>" isOwner="<%=track.isOwner%>" class="track interactable">
-                <a href="/tracks/<%=track.id%>"><%=track.title%></a>
 
-                <% for (artist of track.artists.split(/\s*[,;]\s*/)) {%>
-                    <a href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
+    <div id="playlist-page" class="flex-row">
+        <img id="playlist-image" class="image on-page mr" src="../<%=playlist.image_url%>" alt=""> <br>
+
+        <div class="flex-col">
+            <h2 id="playlist-title"><%=playlist.title%></h2>
+
+            <div id="playlist-controls">
+                <button class="audio-player-btn" id="backward" title="Backward">
+                    <i class="fa-solid fa-backward-step"></i>
+                </button>
+                <button class="audio-player-btn" id="start-playback" title="Play/Pause" activated=false>
+                    <i class="fa-solid fa-play"></i>
+                </button> 
+                <button class="audio-player-btn" id="forward" title="Forward">
+                    <i class="fa-solid fa-forward-step"></i>
+                </button>
+                <button class="audio-player-btn" id="download" title="Download" onclick="downloadPlaylist(window.location.href + `/download`)">
+                    <i class="fa-solid fa-download"></i>
+                </button>
+
+                <% if(loggedIn){ %>
+                <button class="audio-player-btn" title="Add Playlist to Catalogue" onclick="addPlaylist()">
+                   <i class="fa-solid fa-plus"></i> 
+                </button>
                 <%};%>
 
-                <% for (genre of track.genres.split(/\s*[,;]\s*/)) {%>
-                    <a href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
+                <% if(isOwner){ %>
+                <button class="audio-player-btn" title="Edit" onclick="editPlaylist()">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+
+                <button class="audio-player-btn" title="Delete" onclick="deletePlaylist()">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
                 <%};%>
+            </div>
+            <div class="audio-duration"></div>
+                <ul>
+                    <% for(let track of tracks){%>
+                        <li isLiked="<%=track.isLiked%>" isOwner="<%=track.isOwner%>" class="box track interactable">
+                            <div class="left">
+                                <img class="list-item-img" src="../<%=track.image_url%>" alt="">
+                            
+                                <a class="title" href="../search?q=<%=track.title%>&f=tr,"> <%=track.title%> </a> <br>
 
-                <span><%=track.likes%></span>
+                                <% let counter = 0;%>
+                                <% for (artist of track.artists.split(/\s*[,;]\s*/)) {%>
+                                    <a class="artists" href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
+                                    <% if(counter === 3) break;%>
+                                    <% counter++; %>
+                                <%};%>
+                            </div>
+                            
+                            <div class="right">
+                                <% for (genre of track.genres.split(/\s*[,;]\s*/)) {%>
+                                <a class="genres" href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
+                                <%};%>
 
-                <audio class="track in-playlist" src="../tracks/<%=track.audio_url%>"></audio>
+                                <span class="likes"><%=Number(track.likes)%></span>
+                            </div>
 
-                <%if(isOwner){%>
-                <button onclick="removeFromPlaylist(`<%=playlist.id%>`, `<%=track.id%>`)">Remove</button>
-                <%};%>
-            </li>
-        <%};%>
-    </ul>
+                            <audio class="track in-playlist" src="../tracks/<%=track.audio_url%>"></audio>
 
-    <button id="forward">
-        Forward
-    </button>
-    <button id="start-playback" activated=false>
-        Start Play
-    </button> 
-    <button id="backward">
-        Backward
-    </button><br>
+                            <%if(isOwner){%>
+                            <button class="icon clickable" title="Remove from Playlist" onclick="removeFromPlaylist(`<%=playlist.id%>`, `<%=track.id%>`)"><i class="fa-solid fa-minus"></i></button>
+                            <%};%>
+                        </li>
+                    <%};%>
+                </ul>
+            </div>
+        </div>
 
-    <button onclick="downloadPlaylist(window.location.href + `/download`)">
-        Download
-    </button> <br>
-
-    <% if(loggedIn){ %>
-    <button onclick="addPlaylist()">
-        Add Playlist to Catalogue
-    </button> <br>
-    <%};%>
-
-    <% if(isOwner){ %>
-    <button onclick="editPlaylist()">
-        Edit
-    </button> <br>
-
-    <button onclick="deletePlaylist()">
-        Delete
-    </button> <br>
-    <%};%>
-    
-
-    <div id="edit-playlist">
+    <div id="edit-playlist" class="hidden centered-pop-up pop-up-form">
         <input type="text" name="title" id="title-inp" value="<%=playlist.title%>"> <br>
         <input type="file" name="image" id="image-inp"> <br>
 
-        <button onclick="sendEdittedPlaylist()">Edit</button>
+        <button class="btn" onclick="sendEdittedPlaylist()">Edit</button>
     </div>
 
-    <script src="../public/scripts/playlist-func.js"></script>
+    <div id="overlay" class="hidden overlay"></div>
+
+    
 
     <input id="loggin-flag" type="hidden" value="<%=loggedIn%>">
 
+    <script src="../public/scripts/base_url.js"></script>
     <script src="../public/scripts/script.js"></script>
+    <script src="../public/scripts/playlist-func.js"></script>
     <%- include('components/contextmenus/track') %>
 </body>
 </html>
