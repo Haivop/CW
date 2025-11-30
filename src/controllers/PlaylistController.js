@@ -61,7 +61,7 @@ module.exports.playlistPage = async (req, res) => {
         raw: true
     });
 
-    tracks = tracks.filter((track) => { track.public_flag === true });
+    tracks = tracks.filter(track => track.public_flag === true );
     tracks = tracks.map((track) => { track.isLiked = likedTracks.includes(track) });
 
     const isOwner = req.session.user === playlist.owner_id;

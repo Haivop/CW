@@ -154,7 +154,7 @@ module.exports.profilePage = async(req, res) => {
     const catalogueType = req.query.t == undefined ? "none" : req.query.t;
     const userId = sanitizeHtml(req.params.profileId);
     
-    const { 
+    let { 
         uploaded_tracks, 
         created_playlists, 
         saved_playlists, 
@@ -163,7 +163,7 @@ module.exports.profilePage = async(req, res) => {
     
     const profile = await User.findByPk(userId, {raw: true});
 
-    uploaded_tracks.filter((track) => { track.public_flag === true });
+    uploaded_tracks = uploaded_tracks.filter(track =>  track.public_flag === true );
 
     res.render('profile-page', {
         profile: { 
