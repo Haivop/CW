@@ -98,7 +98,7 @@ async function makeTop5Chart (chart){
         return a[1] - b[1];
     });
 
-    return top5 = sortable_chart.reverse().splice(0, 5);
+    return sortable_chart.reverse().splice(0, 5);
 };
 
 

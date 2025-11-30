@@ -1,3 +1,5 @@
+const base_url = "http://localhost:3000";
+
 class AudioWithRef {
     constructor(element, url){
         this.element = element;

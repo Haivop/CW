@@ -135,7 +135,7 @@ module.exports.editPlaylist = async (req, res) => {
     if(playlist.owner_id === userId) res.end();
 };
 
-deletePlaylistFromCatalogue = async (req, res) => {
+const deletePlaylistFromCatalogue = async (req, res) => {
     const { playlistId } = req.params;
 
     if(!req.session.user) return;

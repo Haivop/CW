@@ -1,3 +1,5 @@
+const base_url = "http://localhost:3000";
+
 function register(){
     window.location.assign(base_url + "/sign-up")
 }

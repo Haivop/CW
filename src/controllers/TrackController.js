@@ -45,7 +45,7 @@ module.exports.trackPage = async (req, res) => {
     const trackId = req.params.trackId;
 
     const track = await Track.findByPk(trackId);
-    if(track.public_flag != true) res.redirect("/");
+    if(track.public_flag !== true) res.redirect("/");
 
     const createdPlaylists = await Playlist.findAll({
         where: {
