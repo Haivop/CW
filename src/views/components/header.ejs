@@ -1,25 +1,36 @@
 <header>
-    <a href="/">Hub</a>
-    <a href="/catalogue">Gatalogue</a>
-    <a href="/tracks/upload">Upload</a>
+    <div class="logo yellowtail-regular .header-box">
+        RythmFlow
+    </div>
 
-    <% if(loggedIn){%>
-        <a href="/account">Account</a>
-        <button onclick="requestLogout()">Log Out</button>
-    <%} else{%>
-        <a href="/login">Log In</a>
-        <a href="/sign-up">Sign Up</a>
-    <%};%>
+    <div class=".header-box">
+        <%- include('./search/search') %>
+    </div>
+    
+    
+    <div class=".header-box">
+        <a href="/">Hub</a>
+        <a href="/catalogue">Gatalogue</a>
+        <a href="/tracks/upload">Upload</a>
 
-    <script>
-        function requestLogout() {
-            fetch("http://localhost:8080/login", {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-type': 'application/json; charset=UTF-8',
-                        'Accept': 'application/json'
-                    },
-            }).then(() => {window.location.reload()});
-        }
-    </script>
+        <% if(loggedIn){%>
+            <a href="/account">Account</a>
+            <button id="logout" class="btn" onclick="requestLogout()">Log Out</button>
+        <%} else{%>
+            <a href="/login">Log In</a>
+            <a href="/sign-up">Sign Up</a>
+        <%};%>
+    </div>
 </header>
+
+<script>
+    function requestLogout() {
+        fetch("http://localhost:8080/login", {
+                method: 'DELETE',
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                    'Accept': 'application/json'
+                },
+        }).then(() => {window.location.reload()});
+    }
+</script>

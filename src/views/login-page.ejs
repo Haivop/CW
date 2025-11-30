@@ -1,13 +1,25 @@
 <%- include('components/html-head') %>
 <body>
-    <form method="POST" action="/login">
-        <label for="username">username</label>
-        <input name="username" type="text" required>
+    <div class="login-grid">
+        <div></div>
+        <div>
+            <div id="login-form">
+                <h2 class="yellowtail-regular login-header">RythmFlow</h2>
+                <form method="POST" action="/login">
+                    <label for="username">Username</label>
+                    <input name="username" type="text" required>
 
-        <label for="password">password</label>
-        <input name="password" type="text" required>
+                    <br>
 
-        <button type="submit">Log In</button>
-    </form>
+                    <label for="password">Password</label>
+                    <input name="password" type="text" required>
+
+                    <br>
+
+                    <button class="btn" type="submit">Log In</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

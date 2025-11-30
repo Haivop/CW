@@ -1,19 +1,18 @@
 <input id="search" type="search" placeholder="Search">
-<button onclick="engageSearch()">search</button>
+<button id="search-btn" class=".btn">Search</button>
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const input = document.getElementById("search");
         const filters = window.location.href.match(/&f=.*/) ? window.location.href.match(/&f=.*/) : "";
+        console.log(filters);
         
         input.addEventListener("keydown", (event) => {
-            if(event.keyCode === 13) engageSearch();
+            if(event.keyCode === 13) window.location.assign("http://localhost:8080/search?q=" + input.value + filters);
+        });
+
+        document.getElementById("search-btn").addEventListener("click", () => {
+            window.location.assign("http://localhost:8080/search?q=" + input.value + filters);
         });
     });
-
-    function engageSearch(){
-        window.location.assign("http://localhost:8080/search?q=" + document.getElementById("search").value + filters);
-    };
 </script>
-
-<br>

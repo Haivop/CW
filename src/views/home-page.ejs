@@ -1,54 +1,71 @@
 <%- include('components/html-head') %>
 <body>
     <%- include('components/header') %>
-    <%- include('components/search/search') %>
+    <section class="grid">
+        <div class="add-container">
+            <%- include('components/search/filters') %>
+        </div>
+        <div class="main-container">
+            <section class="container">
+                <h3>Playlists</h3>
+                <ul id="playlists_list">
+                    <% playlists.forEach((playlist) => {%>
+                        <li isSaved="<%=playlist.isSaved%>" isOwner="<%=playlist.isOwner%>" class="box playlist interactable" value="<%=playlist.id%>">
+                            <img class="list-item-img" src="<%=playlist.image_url%>" alt="">
+                            <a class="title" href="/playlists/<%=playlist.id%>">
+                                <%=[playlist.title]%>
+                            </a>
+                        </li>
+                    <%});%>
+                </ul>
+            </section>
+            
+            <section class="container">
+                <h3>Tracks</h3>
+                <ul id="tracks_list">
+                    <% tracks.forEach((track) => {%>
+                        <li isLiked="<%=track.isLiked%>" isOwner="<%=track.isOwner%>" class="box track interactable" value="<%=track.id%>">
+                            <div class="left">
+                                <img class="list-item-img" src="<%=track.image_url%>" alt="">
+                            
+                                <a class="title" href="../search?q=<%=track.title%>&f=tr,"> <%=track.title%> </a> <br>
 
-    <%- include('components/search/filters') %>
+                                <% let counter = 0;%>
+                                <% for (artist of track.artists.split(/\s*[,;]\s*/)) {%>
+                                    <a class="artists" href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
+                                    <% if(counter === 3) break;%>
+                                    <% counter++; %>
+                                <%};%>
+                            </div>
+                            
+                            <div class="right">
+                                <% for (genre of track.genres.split(/\s*[,;]\s*/)) {%>
+                                <a class="genres" href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
+                                <%};%>
 
-    <h3>Playlists</h3>
-    <ul id="playlists_list">
-        <% playlists.forEach((playlist) => {%>
-            <li isSaved="<%=playlist.isSaved%>" isOwner="<%=playlist.isOwner%>" class="playlist interactable" value="<%=playlist.id%>">
-                <a href="/playlists/<%=playlist.id%>">
-                    <%=[playlist.title]%>
-                </a>
-            </li>
-        <%});%>
-    </ul>
+                                <span class="likes"><%=Number(track.likes)%></span>
+                            </div>
+                        </li>
+                    <%});%>
+                </ul>
+            </section>
 
-    <h3>Tracks</h3>
-    <ul id="tracks_list">
-        <% tracks.forEach((track) => {%>
-            <li isLiked="<%=track.isLiked%>" isOwner="<%=track.isOwner%>" class="track interactable" value="<%=track.id%>">
-                <a href="/tracks/<%=track.id%>">
-                    <a href="../search?q=<%=track.title%>&f=tr,"><%=track.title%></a>
-
-                    <% for (artist of track.artists.split(/\s*[,;]\s*/)) {%>
-                        <a href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
-                    <%};%>
-
-                    <% for (genre of track.genres.split(/\s*[,;]\s*/)) {%>
-                        <a href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
-                    <%};%>
-
-                    <span class="like">
-                        <%=Number(track.likes)%>
-                    </span>
-                </a>
-            </li>
-        <%});%>
-    </ul>
-
-    <h3>Profiles</h3>
-    <ul id="profiles_list">
-        <% profiles.forEach((profile) => {%>
-            <li class="profile" value="<%=profile.id%>">
-                <a href="/profiles/<%=profile.id%>">
-                    <%=[profile.username]%>
-                </a>
-            </li>
-        <%});%>
-    </ul>
+            <section class="container">
+                <h3>Profiles</h3>
+                <ul id="profiles_list">
+                    <% profiles.forEach((profile) => {%>
+                        <li class="box profile" value="<%=profile.id%>">
+                            <img class="list-item-img profile" src="<%=profile.avatar_url%>" alt="">
+                            <a class="title" href="/profiles/<%=profile.id%>">
+                                <%=[profile.username]%>
+                            </a>
+                        </li>
+                    <%});%>
+                </ul>
+            </section>
+        </div>
+        <div class="add-container"></div>
+    </section>
 
     <input id="loggin-flag" type="hidden" value="<%=loggedIn%>">
 

@@ -78,7 +78,8 @@ module.exports.trackPage = async (req, res) => {
 
     if(track.public_flag === true) 
         res.render('track-page', {
-            track, cataloguePlaylists, 
+            track, 
+            cataloguePlaylists, 
             playlistsContainingTrack, 
             loggedIn: await isLoggedIn(req), 
             isLiked,

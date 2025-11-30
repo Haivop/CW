@@ -15,22 +15,24 @@ module.exports.search = async (req, res) => {
     let profiles = [];
     let tracks = [];
 
-    const substringSearch = { [Op.substring]: `${searchQuery}`,}
+    const substringSearch = { [Op.substring]: `${searchQuery}` }
 
     const titleQuery = filter == "" || filter.match("tr")  ? substringSearch : null;
-    const genreQuery = filter == "" || filter.match("gn") ? substringSearch : null;
+    const genresQuery = filter == "" || filter.match("gn") ? substringSearch : null;
     const artistsQuery = filter == "" || filter.match("ar") ? substringSearch : null;
     
-    if(!(titleQuery && genreQuery && artistsQuery)){
+    if(!(titleQuery && genresQuery && artistsQuery)){
         tracks = await Track.findAll({
             where: {
                 [Op.or]:{ 
                     title: titleQuery,
-                    genre: genreQuery,
+                    genres: genresQuery,
                     artists: artistsQuery
                 },
             },
             raw: true,
+        }).catch((err) => {
+            console.log(err);
         });
 
         tracks.map((track) => {track.isOwner = track.owner_id === req.session.user ? true : false});
