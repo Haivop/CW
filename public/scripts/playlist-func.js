@@ -25,6 +25,7 @@ class Playlist {
 
     build(){
         for(let i = 0; i < this.tracks.length; i++){
+            i = parseInt(i);
             const prev = i-1 >= 0 ? i-1 : this.tracks.length - 1;
             const next = i+1 <= this.tracks.length - 1 ? i+1 : 0;
 
@@ -89,6 +90,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let playlist = [];
     const audios = document.querySelectorAll("audio.in-playlist");
     for(let i = 0; i < audios.length; i++){
+        i = parseInt(i);
         const audio = new AudioWithRef(audios[i], audios[i].src);
         playlist.push(audio);
     }

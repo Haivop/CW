@@ -76,11 +76,15 @@ module.exports.accountPage = async (req, res) => {
     for(let i = 0; i < likedCount; i++){
         const {artists, genres} = likedTracks[parseInt(i)];
 
-        for(let artist of artists) 
-            artist_chart[artist.toString()] = artist_chart[artist.toString()] ? artist_chart[artist.toString()] + 1 : 1;
-
-        for(let genre of genres) 
-            genre_chart[genre.toString()] = genre_chart[genre.toString()] ? genre_chart[genre.toString()] + 1 : 1;
+        for(let artist of artists) {
+            artist = artist.toString()
+            artist_chart[artist] = artist_chart[artist] ? artist_chart[artist] + 1 : 1;
+        }
+            
+        for(let genre of genres) {
+            genre = genre.toString();
+            genre_chart[genre] = genre_chart[genre] ? genre_chart[genre] + 1 : 1;
+        }
     }
 
     const top5Tracks = likedTracks.splice(0, 5);
@@ -92,7 +96,10 @@ module.exports.accountPage = async (req, res) => {
 
 async function makeTop5Chart (chart){
     const sortable_chart = [];
-    for(let item in chart) sortable_chart.push([item, chart[item]]);
+    for(let item in chart){
+        item = item.toString();
+        sortable_chart.push([item, chart[item]])
+    };
 
     sortable_chart.sort(function(a, b) {
         return a[1] - b[1];

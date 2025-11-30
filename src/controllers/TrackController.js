@@ -21,7 +21,10 @@ module.exports.uploadPage = async (req, res) => {
 
 module.exports.uploadTrack = async (req, res) => {
 
-    for(let key of Object.keys(req.body)) req.body[key] = sanitizeHtml(req.body[key]);
+    for(let key of Object.keys(req.body)) {
+        key = key.toString();
+        req.body[key] = sanitizeHtml(req.body[key]);
+    }
 
     const {title, genre, artists} = req.body;
     
