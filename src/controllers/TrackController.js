@@ -146,7 +146,7 @@ async function checkIsLiked (userId, trackId) {
         }
     }) : null;
 
-    return isLiked = user_like != null ? true : false;
+    return user_like != null ? true : false;
 }
 
 module.exports.deleteTrack = async (req, res) => {

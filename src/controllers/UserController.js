@@ -74,13 +74,13 @@ module.exports.accountPage = async (req, res) => {
     const genre_chart = {};
 
     for(let i = 0; i < likedCount; i++){
-        const {artists, genres} = likedTracks[i];
+        const {artists, genres} = likedTracks[parseInt(i)];
 
         for(let artist of artists) 
-            artist_chart[artist] = artist_chart[artist] ? artist_chart[artist] + 1 : 1;
+            artist_chart[artist.toString()] = artist_chart[artist.toString()] ? artist_chart[artist.toString()] + 1 : 1;
 
         for(let genre of genres) 
-            genre_chart[genre] = genre_chart[genre] ? genre_chart[genre] + 1 : 1;
+            genre_chart[genre.toString()] = genre_chart[genre.toString()] ? genre_chart[genre.toString()] + 1 : 1;
     }
 
     const top5Tracks = likedTracks.splice(0, 5);
