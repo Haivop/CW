@@ -40,10 +40,6 @@ async function sendEdittedTrack(){
     const genres = document.getElementById("genres-inp");
     const public_flag = document.getElementById("public-flag-inp");
     const image = document.getElementById("image-inp");
-    console.log(title);
-    console.log(artists);
-    console.log(genres);
-    console.log(public_flag.checked);
 
     formData.append(title.name, title.value);
     formData.append(artists.name, artists.value);

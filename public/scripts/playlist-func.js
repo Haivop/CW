@@ -46,7 +46,9 @@ async function downloadPlaylist(href) {
 };
 
 async function deletePlaylist(){
-    
+    fetch(window.location.href, {
+        method: "DELETE",
+    });
 }
 
 async function sendEdittedPlaylist(){
@@ -90,7 +92,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     let playlist = [];
     const audios = document.querySelectorAll("audio.in-playlist");
     for(let i = 0; i < audios.length; i++){
-        i = parseInt(i);
         const audio = new AudioWithRef(audios[i], audios[i].src);
         playlist.push(audio);
     }

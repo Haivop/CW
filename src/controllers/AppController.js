@@ -47,7 +47,7 @@ module.exports.hubPage = async (req, res) => {
             track.isLiked = true;
             break;
         }
-        track.isOwner = track.owner_id === req.session.user ? true : false;
+        track.isOwner = track.owner_id === req.session.user;
     });
 
     playlists.map((playlist) => {
@@ -58,7 +58,7 @@ module.exports.hubPage = async (req, res) => {
             playlist.isSaved = true;
             break;
         }
-        playlist.isOwner = playlist.owner_id === req.session.user ? true : false;
+        playlist.isOwner = playlist.owner_id === req.session.user;
     });
 
     res.render('home-page', { tracks, playlists, profiles, search: false, loggedIn: await isLoggedIn(req)});

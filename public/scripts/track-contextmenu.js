@@ -14,9 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const deleteContextButton = $("#track-menu #delete-tr-opt");
             $("#track-menu").attr("value", href);
 
-            document.querySelector("#track-menu #like-tr-opt").innerHTML = isLikedFlag === "true" ? "Unlike" : "Like";
+            document.querySelector("#track-menu #like-tr-opt").textContent = isLikedFlag === "true" ? "Unlike" : "Like";
 
-            desideLikeButtonVisibility(likeContextButton, loginFlag, isOwnerFlag);
+            desideLikeButtonVisibility(likeContextButton, loginFlag);
             desideDeleteButtonVisibility(deleteContextButton, isOwnerFlag);
 
             $("#track-menu").finish().toggle(100).

@@ -52,25 +52,25 @@ module.exports.getCataloguesOfUser = async (userId, catalogueType) => {
     
     if(catalogueType === "none" || catalogueType.match("upl")) {
         uploaded_tracks = await Track.findAll(createdQuery);
-        uploaded_tracks.map((track) => {
+        uploaded_tracks = uploaded_tracks.map((track) => {
             track.isOwner = track.owner_id === userId;
         });
     }
     if(catalogueType === "none" || catalogueType.match("cr")) {
         created_playlists = await Playlist.findAll(createdQuery);
-        created_playlists.map((playlist) => {
+        created_playlists = created_playlists.map((playlist) => {
             playlist.isOwner = playlist.owner_id === userId
         });
     }
     if(catalogueType === "none" || catalogueType.match("sv")) {
         saved_playlists = await this.getSavedPlaylists(savedQuery);
-        saved_playlists.map((playlist) => {
+        saved_playlists = saved_playlists.map((playlist) => {
             playlist.isOwner = playlist.owner_id === userId
         });
     }
     if(catalogueType === "none" || catalogueType.match("lk")){
         liked_tracks = await this.getLikedTracks(savedQuery);
-        liked_tracks.map((track) => {
+        liked_tracks = liked_tracks.map((track) => {
             track.isOwner = track.owner_id === userId
         });
         uploaded_tracks.map((track) => {

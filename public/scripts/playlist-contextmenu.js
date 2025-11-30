@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             $("#playlist-menu").attr("value", href)
 
-            document.querySelector("#playlist-menu #save-pl-opt").innerHTML = isSavedFlag === "true" ? "Unsave" : "Save";
+            document.querySelector("#playlist-menu #save-pl-opt").textContent = isSavedFlag === "true" ? "Unsave" : "Save";
 
             desideSaveButtonVisibility(saveContextButton, loginFlag, isOwnerFlag);
             desideDeleteButtonVisibility(deleteContextButton, loginFlag, isOwnerFlag);

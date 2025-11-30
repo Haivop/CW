@@ -15,14 +15,12 @@ const { getSavedPlaylists } = require("../controllers/CatalogueController");
 const { mergePatch } = require("../middleware/utility");
 
 module.exports.uploadPage = async (req, res) => {
-    console.log(1);
     res.render('upload-page', {loggedIn: true});
 };
 
 module.exports.uploadTrack = async (req, res) => {
 
     for(let key of Object.keys(req.body)) {
-        key = key.toString();
         req.body[key] = sanitizeHtml(req.body[key]);
     }
 
@@ -104,7 +102,7 @@ module.exports.addTrackToPlaylists = async (req, res) => {
     for(let playlist of playlistsContainingTrack){
         if(playlistsIds_Array.includes(playlist.getDataValue("id"))) await track_SqlizeObject.removePlaylist(playlist);
         playlistsIds_Array = playlistsIds_Array.filter((id) => {
-            return id === playlist.getDataValue("id") ? false : true;
+            return id === playlist.getDataValue("id");
         });
     };
 
@@ -149,7 +147,7 @@ async function checkIsLiked (userId, trackId) {
         }
     }) : null;
 
-    return user_like != null ? true : false;
+    return user_like != null;
 }
 
 module.exports.deleteTrack = async (req, res) => {

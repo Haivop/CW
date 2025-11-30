@@ -35,7 +35,7 @@ module.exports.search = async (req, res) => {
             console.log(err);
         });
 
-        tracks.map((track) => {track.isOwner = track.owner_id === req.session.user ? true : false});
+        tracks = tracks.map((track) => {track.isOwner = track.owner_id === req.session.user});
     }
     
     if(filter == "" || filter.match("pl")){
@@ -46,7 +46,7 @@ module.exports.search = async (req, res) => {
             raw: true,
         });
 
-        playlists.map((playlist) => {playlist.isOwner = playlist.owner_id === req.session.user ? true : false});
+        playlists = playlists.map((playlist) => {playlist.isOwner = playlist.owner_id === req.session.user});
     }
     
     if(filter == "" || filter.match("pr")){

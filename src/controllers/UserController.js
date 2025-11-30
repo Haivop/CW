@@ -51,7 +51,7 @@ module.exports.login = async (req, res, next) => {
 module.exports.accountPage = async (req, res) => {
     const user = await User.findByPk(req.session.user);
 
-    const likedTracks = await sequelize.query({
+    let likedTracks = await sequelize.query({
         query: `SELECT t.* 
                 FROM Tracks t 
                 JOIN Liked_Catalogues lc ON t.id = lc.track_id 
@@ -65,7 +65,7 @@ module.exports.accountPage = async (req, res) => {
     }); 
 
     const likedCount = likedTracks.length;
-    likedTracks.map((track) => {
+    likedTracks = likedTracks.map((track) => {
         track.artists = track.artists.split(/\s*[,;]\s*/);
         track.genres = track.genres.split(/\s*[,;]\s*/);
     });
@@ -74,17 +74,11 @@ module.exports.accountPage = async (req, res) => {
     const genre_chart = {};
 
     for(let i = 0; i < likedCount; i++){
-        const {artists, genres} = likedTracks[parseInt(i)];
+        const {artists, genres} = likedTracks[i];
 
-        for(let artist of artists) {
-            artist = artist.toString()
-            artist_chart[artist] = artist_chart[artist] ? artist_chart[artist] + 1 : 1;
-        }
+        for(let artist of artists) artist_chart[artist] = artist_chart[artist] ? artist_chart[artist] + 1 : 1;
             
-        for(let genre of genres) {
-            genre = genre.toString();
-            genre_chart[genre] = genre_chart[genre] ? genre_chart[genre] + 1 : 1;
-        }
+        for(let genre of genres) genre_chart[genre] = genre_chart[genre] ? genre_chart[genre] + 1 : 1;
     }
 
     const top5Tracks = likedTracks.splice(0, 5);
@@ -97,7 +91,6 @@ module.exports.accountPage = async (req, res) => {
 async function makeTop5Chart (chart){
     const sortable_chart = [];
     for(let item in chart){
-        item = item.toString();
         sortable_chart.push([item, chart[item]])
     };
 
@@ -105,7 +98,7 @@ async function makeTop5Chart (chart){
         return a[1] - b[1];
     });
 
-    return sortable_chart.reverse().splice(0, 5);
+    return sortable_chart.toReversed().splice(0, 5);
 };
 
 
