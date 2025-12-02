@@ -4,36 +4,65 @@ document.addEventListener("DOMContentLoaded", () => {
         "tracks": "tr",
         "playlists": "pl",
         "profiles": "pr",
-        "artists": "ar",
+        "artists": "art",
         "genres": "gn",
     };
 
     for(let filter of filters){
         filter.addEventListener("click", (event) => {
-            if(!Object.keys(abreviationDict).includes(event.target.attributes.value.value)) return;
-            const matchRegExp = new RegExp(`&f=.*${abreviationDict[event.target.attributes.value.value]}.*`);
-            const abreviation = abreviationDict[event.target.attributes.value.value];
+            const key = event.target?.attributes?.value?.value;
+            if (!key || !(key in abreviationDict)) return;
+
+            const abbreviation = abreviationDict[key];
+            const values = Object.values(abreviationDict);
             let url = window.location.href;
 
-            if(url.match(matchRegExp)){
-                const replaceRegExp = new RegExp(`(?:&f=)?${abreviation},?$`)
+            const hasF = url.includes("&f=");
+            const hasThis = url.includes(`${abbreviation},`) || url.endsWith(abbreviation);
+            const hasAny = values.some(a => url.includes(a)); // масив значень абревіацій
 
-                if(!url.match(replaceRegExp)) {
-                    window.location.href = url.replace(new RegExp(`${abreviation},`), "");
+            // 1. Якщо фільтр уже є в URL
+            if (hasAny && hasF) {
+                let newUrl = url;
+
+                if (hasThis) {
+                    // Видалити саме обраний фільтр
+                    newUrl = newUrl
+                        .replace(`${abbreviation},`, "")
+                        .replace(`,${abbreviation}`, "")
+                        .replace(`${abbreviation}`, "");
                 } else {
-                    window.location.href = url.replace(replaceRegExp, "");
+                    // Видалити інші фільтри, замінити на новий
+                    values.forEach(a => {
+                        newUrl = newUrl
+                            .replace(`${a},`, "")
+                            .replace(`,${a}`, "")
+                            .replace(a, "");
+                    });
+                    // Тепер додати наш
+                    if (!newUrl.endsWith(",") && !newUrl.endsWith("=")) newUrl += ",";
+                    newUrl += abbreviation + ",";
                 }
 
-                return;
-            }
-            
-            if(url.match(/\/search\?q=.*&f=/)) {
-                if(!url.match(/\/search\?q=.*&f=.*,/)) url = url.concat(",");
-                window.location.href = url.concat(`${abreviation},`);
+                // Прибрати зайві коми та пустий &f=
+                newUrl = newUrl
+                    .replace(/,+/g, ",")
+                    .replace("&f=,", "&f=")
+                    .replace(/&f=$/, "");
+
+                window.location.href = newUrl;
                 return;
             }
 
-            window.location.href = url.concat(`&f=${abreviation},`);
+            // 2. Якщо /search?q=...&f= існує, але список ще пустий
+            if (url.includes("/search?q=") && url.includes("&f=")) {
+                if (!url.endsWith(",")) url += ",";
+                window.location.href = url + abbreviation + ",";
+                return;
+            }
+
+            // 3. Якщо фільтрів ще нема
+            window.location.href = url + `&f=${abbreviation},`;
         });
     };
 });

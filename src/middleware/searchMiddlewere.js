@@ -21,7 +21,7 @@ module.exports.search = async (req, res) => {
 
     const titleQuery = filter == "" || filter.match("tr")  ? substringSearch : null;
     const genresQuery = filter == "" || filter.match("gn") ? substringSearch : null;
-    const artistsQuery = filter == "" || filter.match("ar") ? substringSearch : null;
+    const artistsQuery = filter == "" || filter.match("art") ? substringSearch : null;
     
     if(!(titleQuery && genresQuery && artistsQuery)){
         tracks = await Track.findAll({

@@ -13,11 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!key || !abreviationDict[key]) return;
 
             const abbreviation = abreviationDict[key];
+            const values = Object.values(abreviationDict);
             const url = window.location.href;
 
             const hasT = url.includes("?t=");
             const hasThis = url.includes(`${abbreviation},`) || url.endsWith(abbreviation);
-            const hasAny = ["upl", "lk", "cr", "sv"].some(a => url.includes(a));
+            const hasAny = values.some(a => url.includes(a));
 
             // Якщо в URL вже є t= з абревіатурами
             if (hasAny) {
@@ -38,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Для інших абревіатур — видаляємо їх і ставимо наш abbr
                     let newUrl = url;
 
-                    ["upl","lk","cr","sv"].forEach(a => {
+                    values.forEach(a => {
                         newUrl = newUrl
                             .replace(`${a},`, "")
                             .replace(`,${a}`, "")
