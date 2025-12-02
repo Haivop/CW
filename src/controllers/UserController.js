@@ -71,35 +71,29 @@ module.exports.accountPage = async (req, res) => {
         track.genres = track.genres.split(/\s*[,;]\s*/);
     }
 
-    const artist_chart = {};
-    const genre_chart = {};
+    const artist_chart = new Map();
+    const genre_chart = new Map();
 
-    for(let i = 0; i < likedCount; i++){
-        const {artists, genres} = likedTracks[i];
+    for(let liked_track of likedTracks){
+        const {artists, genres} = liked_track;
 
-        for(let artist of artists) artist_chart[artist] = artist_chart[artist] ? artist_chart[artist] + 1 : 1;
-            
-        for(let genre of genres) genre_chart[genre] = genre_chart[genre] ? genre_chart[genre] + 1 : 1;
+        for(let artist of artists) artist_chart.set(artist, (artist_chart.get(artist) || 0) + 1);
+        for(let genre of genres) genre_chart.set(genre, (genre_chart.get(genre) || 0) + 1);
     }
+
+    console.log(artist_chart, genre_chart);
 
     const top5Tracks = likedTracks.splice(0, 5);
     const top5Artists = await makeTop5Chart(artist_chart);
     const top5Genres = await makeTop5Chart(genre_chart);
 
+    console.log(top5Artists, top5Genres);
+
     res.render('account-page', { user, top5Tracks, top5Artists, top5Genres, loggedIn: true});
 };
 
 async function makeTop5Chart (chart){
-    const sortable_chart = [];
-    for(let item in chart){
-        sortable_chart.push([item, chart[item]])
-    };
-
-    sortable_chart.sort(function(a, b) {
-        return a[1] - b[1];
-    });
-
-    return sortable_chart.toReversed().splice(0, 5);
+    return new Map([...chart.entries()].sort((e1, e2) => e1[0] - e2[0]).splice(0, 5))
 };
 
 
