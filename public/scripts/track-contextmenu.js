@@ -1,3 +1,5 @@
+import { base_url } from "./script";
+
 document.addEventListener("DOMContentLoaded", () => {
     $(".interactable.track").bind("contextmenu", function (event) {
         event.preventDefault();

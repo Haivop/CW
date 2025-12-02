@@ -1,3 +1,5 @@
+import { base_url } from "./script";
+
 async function like() {
     fetch(window.location.href, {
             method: 'PATCH',
@@ -31,7 +33,7 @@ async function deleteTrack(){
     fetch(window.location.href, {
         method: 'DELETE',
     })
-    .catch((err) => concole.log(err))
+    .catch((err) => console.log(err))
     .then(() => {
         window.location.assign(base_url + "/");
     });

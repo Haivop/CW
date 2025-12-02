@@ -1,0 +1,15 @@
+import { base_url } from "./script";
+
+document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("search");
+    const filters = window.location.href.match(/&f=.*/) ? window.location.href.match(/&f=.*/) : "";
+    console.log(filters);
+    
+    input.addEventListener("keydown", (event) => {
+        if(event.keyCode === 13) window.location.assign(base_url + "/search?q=" + input.value + filters);
+    });
+
+    document.getElementById("search-btn").addEventListener("click", () => {
+        window.location.assign(base_url + "/search?q=" + input.value + filters);
+    });
+});
