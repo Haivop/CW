@@ -12,6 +12,6 @@ playlist.post("/:playlistId", isAuthed, PlaylistController.addPlaylistToCatalogu
 playlist.put("/:playlistId", isAuthed, imagesUpload.single('image'), PlaylistController.editPlaylist);
 playlist.delete("/:playlistId", isAuthed, PlaylistController.deletePlaylist);
 
-playlist.get("/:playlistId/download", isAuthed, PlaylistController.downloadPlaylist);
+playlist.get("/:playlistId/download", PlaylistController.downloadPlaylist);
 
 module.exports = playlist;

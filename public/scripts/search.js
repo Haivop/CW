@@ -6,10 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(filters);
     
     input.addEventListener("keydown", (event) => {
-        if(event.keyCode === 13) window.location.assign(base_url + "/search?q=" + input.value + filters);
+        if(event.keyCode === 13) window.location.replace(base_url + "/search?q=" + input.value + filters);
     });
 
     document.getElementById("search-btn").addEventListener("click", () => {
-        window.location.assign(base_url + "/search?q=" + input.value + filters);
+        window.location.replace(base_url + "/search?q=" + input.value + filters);
     });
 });

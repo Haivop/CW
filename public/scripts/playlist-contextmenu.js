@@ -94,7 +94,7 @@ async function playPlaylist(href){
 }
 
 async function downloadPlaylist(href){
-    window.location.href = href.concat("/download");
+    window.location.assign(base_url + href.concat("/download"));
 }
 
 async function savePlaylist(href){

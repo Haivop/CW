@@ -97,7 +97,7 @@ async function likeTrack(href){
 
 async function downloadTrack(href){
     console.log(href.concat("/download"));
-    window.location.href = href.concat("/download");
+    window.location.assign(href.concat("/download"));
 }
 
 async function deleteTrack(href){

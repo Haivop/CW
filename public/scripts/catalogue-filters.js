@@ -50,19 +50,19 @@ document.addEventListener("DOMContentLoaded", () => {
                                 .replace(/\?t=,/, "?t=")
                                 .replace(/\?t=$/, `?t=${abbreviation},`);
 
-                    window.location.href = newUrl;
+                    window.location.replace(newUrl);
                 }
                 return;
             }
 
             // Якщо параметр t вже існує
             if (hasT) {
-                window.location.href = url + `${abbreviation},`;
+                window.location.replace(url + `${abbreviation},`);
                 return;
             }
 
             // Якщо t ще немає
-            window.location.href = url + `?t=${abbreviation},`;
+            window.location.replace(url + `?t=${abbreviation},`);
         });
     };
 });

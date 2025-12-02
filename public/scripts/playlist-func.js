@@ -40,10 +40,6 @@ async function addPlaylist() {
     });
 };
 
-async function downloadPlaylist(href) {
-    window.location.href = href;
-};
-
 async function deletePlaylist(){
     fetch(window.location.href, {
         method: "DELETE",
@@ -70,8 +66,6 @@ async function sendEdittedPlaylist(){
 };
 
 async function removeFromPlaylist(playlistId, trackId){
-    console.log(base_url + "/tracks/" + trackId, playlistId)
-
     const content = {
         playlists: playlistId
     }
@@ -139,6 +133,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             stop(playlist.current.nextAudio);
             playback(playlist.current);
         }
+    });
+
+    document.getElementById("download").addEventListener("click", async () => {
+        window.location.assign(window.location.href + "/download");
     });
 });
 

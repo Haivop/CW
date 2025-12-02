@@ -57,12 +57,12 @@ document.addEventListener("DOMContentLoaded", () => {
             // 2. Якщо /search?q=...&f= існує, але список ще пустий
             if (url.includes("/search?q=") && url.includes("&f=")) {
                 if (!url.endsWith(",")) url += ",";
-                window.location.href = url + abbreviation + ",";
+                window.location.replace(url + abbreviation + ",");
                 return;
             }
 
             // 3. Якщо фільтрів ще нема
-            window.location.href = url + `&f=${abbreviation},`;
+            window.location.replace(url + `&f=${abbreviation},`);
         });
     };
 });
