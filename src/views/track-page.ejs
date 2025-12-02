@@ -46,7 +46,7 @@
     <h3 class="header">Playlists Containing Track</h3>
     <ul id="playlists-list">
         <%for(let playlist of playlistsContainingTrack){%>
-            <li isSaved="<%=playlist.isSaved%>" isOwner="<%=playlist.isOwner%>" class="playlist interactable box">
+            <li isSaved="<%=playlist.isSaved%>" isOwner="<%=playlist.isOwner%>" class="playlist interactable box" value="<%=playlist.id%>">
                 <img class="list-item-img" src="../<%=playlist.image_url%>" alt="">
                 <a href="../playlists/<%=playlist.id%>">
                     <%=playlist.title%>

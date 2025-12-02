@@ -14,6 +14,7 @@ const trackRouter = require("./routes/track_routes");
 const catalogueRouter = require("./routes/catalogue_routes");
 const AppController = require("./controllers/AppController");
 const {search} = require("./middleware/searchMiddlewere");
+const { isLoggedIn } = require("./middleware/authMiddleware");
 
 app.use(bodyParser.json());
 app.use(express.urlencoded());
@@ -57,5 +58,12 @@ app.use('/public/scripts/', express.static(process.env.rootFiles + '/public/scri
 
 app.get("/", AppController.hubPage);
 app.get("/search", search)
+
+app.use((error, req, res, next) => {
+	switch(error.status){
+		case 404: res.render("404-page", { loggedIn: isLoggedIn(req) });
+		case 403: res.render("403-page", { loggedIn: false });
+	}
+});
 
 module.exports = app;

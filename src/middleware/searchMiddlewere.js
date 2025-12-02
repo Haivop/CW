@@ -4,10 +4,12 @@ const Track = require('../models/TrackModel');
 const User = require('../models/UserModel');
 const [ Playlist ] = require('../models/PlaylistModel');
 const { isLoggedIn } = require('./authMiddleware');
+const { appendTracksMeta, appendPlaylistsMeta } = require('./utility');
 
 module.exports.search = async (req, res) => {
     const searchQuery = req.query ? sanitizeHtml(req.query.q).toLowerCase() : "";
     const filter = req.query.f ? sanitizeHtml(req.query.f).toLowerCase() : "";
+    const userId = req.session.user ? req.session.user : null;
     
     if(searchQuery == "") res.redirect("/");
 
@@ -32,11 +34,11 @@ module.exports.search = async (req, res) => {
             },
             raw: true,
         }).catch((err) => {
-            console.log(err);
+            if(err) console.log(err);
         });
 
-        tracks = tracks.map((track) => {track.isOwner = track.owner_id === req.session.user});
-    }
+        tracks = await appendTracksMeta(userId, tracks);
+    };
     
     if(filter == "" || filter.match("pl")){
         playlists = await Playlist.findAll({
@@ -44,10 +46,12 @@ module.exports.search = async (req, res) => {
                 title: substringSearch,
             },
             raw: true,
+        }).catch((err) => {
+            if(err) console.log(err);
         });
 
-        playlists = playlists.map((playlist) => {playlist.isOwner = playlist.owner_id === req.session.user});
-    }
+        playlists = await appendPlaylistsMeta(userId, playlists);
+    };
     
     if(filter == "" || filter.match("pr")){
         profiles = await User.findAll({
@@ -55,9 +59,18 @@ module.exports.search = async (req, res) => {
                 username: substringSearch,
             },
             attributes: ['id', 'username'],
+        }).catch((err) => {
+            if(err) console.log(err);
         });
     };
 
+    console.log(playlists);
 
-    if(searchQuery) res.render('home-page', {tracks, playlists, profiles, search: true, loggedIn: await isLoggedIn(req)});
+    if(searchQuery) res.render('home-page', {
+        tracks, 
+        playlists, 
+        profiles, 
+        search: true, 
+        loggedIn: await isLoggedIn(req)
+    });
 };

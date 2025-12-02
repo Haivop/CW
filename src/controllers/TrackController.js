@@ -12,25 +12,27 @@ const sequelize = require("../db/sequelize_connection");
 
 const { isLoggedIn } = require("../middleware/authMiddleware");
 const { getSavedPlaylists } = require("../controllers/CatalogueController");
-const { mergePatch } = require("../middleware/utility");
+const { mergePatch, queryOwned, querySaved, appendPlaylistsMeta, queryUser_TrackIdIntersection } = require("../middleware/utility");
 
 module.exports.uploadPage = async (req, res) => {
     res.render('upload-page', {loggedIn: true});
 };
 
 module.exports.uploadTrack = async (req, res) => {
-
     for(let key of Object.keys(req.body)) {
         req.body[key] = sanitizeHtml(req.body[key]);
     }
 
-    const {title, genre, artists} = req.body;
+    const {title, genres, artists} = req.body;
+
+    const image = req.files.image_file.pop();
+    const audio = req.files.audio_file.pop();
     
-    const imagePath = req.files.image_file ? req.files.image_file.path : "public\\images\\placeholder\\placeholder.jpeg";
-    const audioPath = req.files.audio_file.path;
+    const imagePath = image ? image.path : "public\\images\\placeholder\\placeholder.jpeg";
+    const audioPath = audio.path;
     const owner_id = req.session.user;
 
-    await Track.create({owner_id, title, artists, genre, audio_url: audioPath, image_url: imagePath});
+    await Track.create({owner_id, title, artists, genres, audio_url: audioPath, image_url: imagePath});
 
     res.redirect("/");
 };
@@ -48,32 +50,22 @@ module.exports.trackPage = async (req, res) => {
     const track = await Track.findByPk(trackId);
     if(track.public_flag !== true) res.redirect("/");
 
-    const createdPlaylists = await Playlist.findAll({
-        where: {
-            owner_id: {
-                [Op.eq]: req.session.user,
-            },
-        },
-        raw: true,
-    });
+    const userId = req.session ? req.session.user : null;
 
-    const savedPlaylists = await getSavedPlaylists({
-        where: {
-            user_id: {
-                [Op.eq]: req.session.user,
-            },
-        },
-        raw: true,
-    });
+    const createdPlaylists = await Playlist.findAll(queryOwned(userId))
+        .catch((err) => {
+            if(err) console.log(err);
+        });
+    const savedPlaylists = await getSavedPlaylists(querySaved(userId))
+        .catch((err) => {
+                if(err) console.log(err);
+            });
 
     const cataloguePlaylists = createdPlaylists.concat(savedPlaylists);
-    const playlistsContainingTrack = await track.getPlaylists({raw: true});
-    
-    playlistsContainingTrack.map((playlist) => {
-        playlist.isSaved = cataloguePlaylists.includes(playlist);
-    })
 
-    const userId = req.session ? req.session.user : null;
+    let playlistsContainingTrack = await track.getPlaylists({raw: true});
+    playlistsContainingTrack = await appendPlaylistsMeta(userId, playlistsContainingTrack);
+
     const isLiked = await checkIsLiked(userId, trackId);
     const isOwner = track.owner_id === userId;
 
@@ -96,14 +88,14 @@ module.exports.addTrackToPlaylists = async (req, res) => {
     console.log(playlistsIds_Array);
 
     const track_SqlizeObject = await Track.findByPk(req.params.trackId);
-    if(track_SqlizeObject.owner_id !== req.session.user) res.end();
     const playlistsContainingTrack = await track_SqlizeObject.getPlaylists();
+    console.log(playlistsContainingTrack);
 
     for(let playlist of playlistsContainingTrack){
-        if(playlistsIds_Array.includes(playlist.getDataValue("id"))) await track_SqlizeObject.removePlaylist(playlist);
-        playlistsIds_Array = playlistsIds_Array.filter((id) => {
-            return id === playlist.getDataValue("id");
-        });
+        if(!playlistsIds_Array.includes(playlist.getDataValue("id"))) continue;
+        
+        await track_SqlizeObject.removePlaylist(playlist);
+        playlistsIds_Array = playlistsIds_Array.filter(id => id !== playlist.getDataValue("id"));
     };
 
     for(let uuid of playlistsIds_Array){
@@ -111,7 +103,7 @@ module.exports.addTrackToPlaylists = async (req, res) => {
         await track_SqlizeObject.addPlaylist(playlist_SqlizeObject);
     };
 
-    if(track_SqlizeObject.owner_id === req.session.user) this.trackPage(req, res);
+    if(track_SqlizeObject.owner_id === req.session.user) res.redirect(req.originalUrl);
 }
 
 module.exports.like = async (req, res, next) => {
@@ -120,12 +112,7 @@ module.exports.like = async (req, res, next) => {
 
     const currentLikes = await track.getDataValue("likes");
     if (await checkIsLiked(user.id, track.id)){
-        LikedTracksCatalogue.destroy({
-            where: {
-                user_id: user.id, 
-                track_id: track.id,
-            },
-        });
+        LikedTracksCatalogue.destroy(queryUser_TrackIdIntersection(user.id, track.id));
         track.setDataValue("likes", currentLikes - 1);
     } else {
         LikedTracksCatalogue.create({
@@ -140,24 +127,18 @@ module.exports.like = async (req, res, next) => {
 }
 
 async function checkIsLiked (userId, trackId) {
-    const user_like = userId != null ? await LikedTracksCatalogue.findOne({
-        where: {
-            user_id: userId,
-            track_id: trackId,
-        }
-    }) : null;
+    const user_like = userId != null ? await LikedTracksCatalogue.findOne(queryUser_TrackIdIntersection(userId, trackId)) : null;
 
     return user_like != null;
 }
 
 module.exports.deleteTrack = async (req, res) => {
-    if(!req.session.user) return;
-    console.log("Here");
+    if(!req.session.user) res.status(403).end();
     const trackId = sanitizeHtml(req.params.trackId);
 
     const track = await Track.findByPk(trackId);
     await track.destroy();
-    res.redirect("/");
+    if(req.session.user) res.status(204).end();
 }
 
 module.exports.editTrack = async (req, res) => {
@@ -165,13 +146,19 @@ module.exports.editTrack = async (req, res) => {
     const trackId = sanitizeHtml(req.params.trackId);
 
     let track = await Track.findByPk(trackId);
-    if(track.owner_id !== userId) res.end();
+    if(track.owner_id !== userId) res.status(403).end();
 
+    if(!req.file) delete req.body.image;
     const newTrackData = req.body;
-    newTrackData.image_url = req.file ? req.file.path : null
+    newTrackData.image_url = req.file ? req.file.path : null;
+
+    console.log(newTrackData);
     
-    track = await mergePatch(newTrackData, track);
+    track = await mergePatch(newTrackData, track)
+        .catch((err) => {
+            if(err) console.log(err)
+        });
 
     track.save();
-    if(track.owner_id === userId) res.end();
-}
+    if(track.owner_id === userId) res.status(200).end();
+};

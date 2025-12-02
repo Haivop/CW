@@ -23,8 +23,15 @@ module.exports.login = async (req, res, next) => {
                     [Op.eq]: sanitizeHtml(req.body.username),
                 },
             },
-            raw: true
+            raw: true,
         });
+
+        if(user == [] || !user || user === null){
+            const error = new Error("No such user!");
+            error.status = 403;
+            next(error);
+            return;
+        };
 
         if(user.password !== hashPassword(req.body.password, user.password_salt)){
             const error = new Error("Invalid password!");
@@ -32,12 +39,6 @@ module.exports.login = async (req, res, next) => {
             next(error);
         };
 
-        if(user == [] || !user || user == null){
-            const error = new Error("no such user!");
-            error.status = 404;
-            next(error);
-        };
-        
         req.session.user = user.id;
 
         req.session.save(function(err){
@@ -65,10 +66,10 @@ module.exports.accountPage = async (req, res) => {
     }); 
 
     const likedCount = likedTracks.length;
-    likedTracks = likedTracks.map((track) => {
+    for(let track of likedTracks){
         track.artists = track.artists.split(/\s*[,;]\s*/);
         track.genres = track.genres.split(/\s*[,;]\s*/);
-    });
+    }
 
     const artist_chart = {};
     const genre_chart = {};
@@ -163,7 +164,10 @@ module.exports.profilePage = async(req, res) => {
     
     const profile = await User.findByPk(userId, {raw: true});
 
-    uploaded_tracks = uploaded_tracks.filter(track =>  track.public_flag === true );
+    console.log(uploaded_tracks);
+
+    uploaded_tracks = uploaded_tracks.filter(track => track.public_flag);
+    console.log(uploaded_tracks);
 
     res.render('profile-page', {
         profile: { 
@@ -193,16 +197,6 @@ module.exports.editAccount = async (req, res) => {
     originalUserData.save();
 
     res.redirect(req.originalUrl);
-};
-
-module.exports.blockUser = async (req, res) => {
-    const profileId = sanitizeHtml(req.params.profileId);
-    const user = await User.findByPk(profileId);
-
-    user.block_flag = user.block_flag === 0 ? 1 : 0;
-    user.save();
-    
-    res.end()
 };
 
 module.exports.deleteUser = async (req, res) => {

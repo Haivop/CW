@@ -29,7 +29,11 @@ $(document).bind("mousedown", function (e) {
 
 async function deleteTrack(){
     fetch(window.location.href, {
-            method: 'DELETE',
+        method: 'DELETE',
+    })
+    .catch((err) => concole.log(err))
+    .then(() => {
+        window.location.assign(base_url + "/");
     });
 };
 

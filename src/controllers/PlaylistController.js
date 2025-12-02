@@ -2,46 +2,36 @@ const sanitizeHtml = require('sanitize-html');
 const {Op} = require ("sequelize");
 const node_process = require('node:process');
 node_process.loadEnvFile("./config/.env");
-const zip = require('adm-zip');
 const fs = require('node:fs');
 const AdmZip = require('adm-zip');
 
 const sequelize = require("../db/sequelize_connection");
-const [ Playlist ] = require("../models/PlaylistModel");
+const Playlist = require("../models/PlaylistModel")[0];
 const [ , PlaylistCatalogue ] = require("../models/CataloguesModel");
 
 const {isLoggedIn} = require("../middleware/authMiddleware");
 
 const { getLikedTracks } = require("../controllers/CatalogueController");
-const { mergePatch } = require("../middleware/utility");
+const { mergePatch, queryUser_PlaylistIdIntersection, queryById, querySaved } = require("../middleware/utility");
 
 
 module.exports.createPlaylist = async (req, res) => {
+    if(!req.session.user) res.status(403).end()
+
     const path = req.file ? req.file.path : "public\\images\\placeholder\\placeholder.jpeg";
-
-    if(!req.body.title) throw new Error("null title");
     const title = sanitizeHtml(req.body.title);
-
     const owner_id = req.session.user;
-
-    console.log(owner_id, title, path);
 
     await Playlist.create({owner_id, title, image_url: path});
 
-    res.redirect('/catalogue');
+    if(req.session.user) res.redirect('/catalogue');
 };
 
 module.exports.deletePlaylist = async (req, res) => {
-    const { playlistId } = req.params;
-    if(!req.session.user) return;
-
-    await Playlist.destroy({
-        where: {
-            id: {
-                [Op.eq]: playlistId,
-            },
-        }
-    }).catch((err) => { console.log(err) });
+    if(!req.session.user) res.status(403).end();
+    const playlistId = req.params.playlistId;
+    
+    await Playlist.destroy(queryById(playlistId)).catch((err) => { console.log(err) });
 
     if(req.originalUrl.match(/\/playlists/)) res.status(204).redirect("/");
     else res.status(204);
@@ -49,24 +39,18 @@ module.exports.deletePlaylist = async (req, res) => {
 
 
 module.exports.playlistPage = async (req, res) => {
-    const playlist = await Playlist.findByPk(req.params.playlistId);
+    const playlist = await Playlist.findByPk(req.params.playlistId)
+        .catch((err) => { console.log(err) });
 
-    const tracks = await playlist.getTracks({ raw: true });
-    const likedTracks = await getLikedTracks({
-        where: {
-            user_id: {
-                [Op.eq]: req.session.user,
-            },
-        },
-        raw: true
+    let tracks = await playlist.getTracks({ raw: true });
+    const likedTracks = await getLikedTracks(querySaved(req.session.user));
+
+    tracks = tracks.filter(track => track.public_flag);
+    tracks.forEach((track) => {
+        track.isLiked = likedTracks.some(liked_track => liked_track.id === track.id)
     });
 
-    tracks = tracks.filter(track => track.public_flag === true );
-    tracks = tracks.map((track) => { track.isLiked = likedTracks.includes(track) });
-
     const isOwner = req.session.user === playlist.owner_id;
-
-    console.log(isOwner);
 
     res.render('playlist-page', {playlist: playlist.toJSON(), tracks, loggedIn: await isLoggedIn(req), isOwner});
 };
@@ -91,28 +75,18 @@ module.exports.downloadPlaylist = async (req, res) => {
 };
 
 module.exports.addPlaylistToCatalogue = async (req, res) => {
-    const { playlistId } = req.params;
-    if(!req.session.user) return;
+    if(!req.session.user) res.status(403).end();
 
-    const isAlreadySaved = await PlaylistCatalogue.findOne({
-        where: {
-            user_id: {
-                [Op.eq]: req.session.user,
-            },
-            playlist_id: {
-                [Op.eq]: playlistId,
-            },
-        }
-    });
+    const playlistId = req.params.playlistId;
+    const query = queryUser_PlaylistIdIntersection(req.session.user, playlistId)
+    const isAlreadySaved = await PlaylistCatalogue.findOne(query);
 
-    if(isAlreadySaved != null) deletePlaylistFromCatalogue(req, res);
+    if(isAlreadySaved != null) await deletePlaylistFromCatalogue(req, res);
     else {
-        await PlaylistCatalogue.create({
-            user_id: req.session.user,
-            playlist_id: playlistId,
-        }).catch((err) => { console.log(err) });
+        await PlaylistCatalogue.create(query)
+            .catch((err) => { console.log(err) });
 
-        res.status(200);
+        if(req.session.user) res.status(200);
     }
 };
 
@@ -121,7 +95,7 @@ module.exports.editPlaylist = async (req, res) => {
     const playlistId = sanitizeHtml(req.params.playlistId);
     let playlist = await Playlist.findByPk(playlistId);
 
-    if(playlist.owner_id !== userId) res.end();
+    if(playlist.owner_id !== userId) res.status(403).end();
 
     if(!req.file) delete req.body.image;
 
@@ -131,19 +105,17 @@ module.exports.editPlaylist = async (req, res) => {
     playlist = await mergePatch(newPlaylistData, playlist);
     playlist.save();
 
-    if(playlist.owner_id === userId) res.end();
+    if(playlist.owner_id === userId) res.status(200).end();
 };
 
 const deletePlaylistFromCatalogue = async (req, res) => {
-    const { playlistId } = req.params;
+    if(!req.session.user) res.status(403).next(new Error("No Access").status = 403);
+    
+    const playlistId = req.params.playlistId;
+    await PlaylistCatalogue.destroy(
+        queryUser_PlaylistIdIntersection(req.session.user, playlistId)
+    ).catch((err) => { console.log(err)});
 
-    if(!req.session.user) return;
-
-    await PlaylistCatalogue.destroy({
-        user_id: req.session.user,
-        playlist_id: playlistId,
-    }).catch((err) => { console.log(err)});
-
-    res.status(200);
+    if(req.session.user) res.status(200).redirect(req.originalUrl);
 };
 

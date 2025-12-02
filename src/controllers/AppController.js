@@ -5,10 +5,11 @@ const [ Playlist ] = require("../models/PlaylistModel");
 const Track = require("../models/TrackModel");
 const User = require("../models/UserModel");
 const { isLoggedIn } = require("../middleware/authMiddleware");
-const { getLikedTracks, getSavedPlaylists } = require("../controllers/CatalogueController");
+const { appendTracksMeta, appendPlaylistsMeta } = require("../middleware/utility");
+
 
 module.exports.hubPage = async (req, res) => {
-    const tracks = await Track.findAll({
+    let tracks = await Track.findAll({
         where: {
             public_flag: true,
         },
@@ -17,7 +18,7 @@ module.exports.hubPage = async (req, res) => {
         limit: 10,
     });
 
-    const playlists = await Playlist.findAll({
+    let playlists = await Playlist.findAll({
         raw: true,
         limit: 10,
     });
@@ -27,39 +28,8 @@ module.exports.hubPage = async (req, res) => {
         limit: 10,
     })
 
-    const query = {
-        where: {
-            user_id: {
-                [Op.eq]: req.session.user,
-            },
-        },
-        raw: true
-    }
-
-    const likedTracks = await getLikedTracks(query);
-    const savedPlaylists = await getSavedPlaylists(query);
-
-    tracks.map((track) => {
-        track.isLiked = false;
-        for(let likedTrack of likedTracks){
-            if(likedTrack.id !== track.id) continue;
-
-            track.isLiked = true;
-            break;
-        }
-        track.isOwner = track.owner_id === req.session.user;
-    });
-
-    playlists.map((playlist) => {
-        playlist.isSaved = false;
-        for(let savedPlaylist of savedPlaylists){
-            if(savedPlaylist.id !== playlist.id) continue;
-
-            playlist.isSaved = true;
-            break;
-        }
-        playlist.isOwner = playlist.owner_id === req.session.user;
-    });
+    tracks = await appendTracksMeta(req.session.user, tracks);
+    playlists = await appendPlaylistsMeta(req.session.user, playlists);
 
     res.render('home-page', { tracks, playlists, profiles, search: false, loggedIn: await isLoggedIn(req)});
 }; 

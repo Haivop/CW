@@ -1,5 +1,3 @@
-const base_url = "http://localhost:3000";
-
 document.addEventListener("DOMContentLoaded", () => {
     $(".interactable.playlist").bind("contextmenu", function (event) {
         event.preventDefault();

@@ -191,7 +191,7 @@ ul {
 }
 
 .login-grid{
-    background-image: url("http://localhost:8080/public/images/system/login_page_background.jpg");
+    background-image: url("http://localhost:3000/public/images/system/login_page_background.jpg");
     background-size: contain;
     display: grid;
     grid-template-columns: 1fr 1fr;

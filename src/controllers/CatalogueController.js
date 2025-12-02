@@ -52,31 +52,38 @@ module.exports.getCataloguesOfUser = async (userId, catalogueType) => {
     
     if(catalogueType === "none" || catalogueType.match("upl")) {
         uploaded_tracks = await Track.findAll(createdQuery);
-        uploaded_tracks = uploaded_tracks.map((track) => {
+        uploaded_tracks.forEach((track) => {
             track.isOwner = track.owner_id === userId;
         });
     }
     if(catalogueType === "none" || catalogueType.match("cr")) {
         created_playlists = await Playlist.findAll(createdQuery);
-        created_playlists = created_playlists.map((playlist) => {
+        created_playlists.forEach((playlist) => {
             playlist.isOwner = playlist.owner_id === userId
         });
     }
     if(catalogueType === "none" || catalogueType.match("sv")) {
         saved_playlists = await this.getSavedPlaylists(savedQuery);
-        saved_playlists = saved_playlists.map((playlist) => {
+        saved_playlists.forEach((playlist) => {
             playlist.isOwner = playlist.owner_id === userId
         });
     }
     if(catalogueType === "none" || catalogueType.match("lk")){
         liked_tracks = await this.getLikedTracks(savedQuery);
-        liked_tracks = liked_tracks.map((track) => {
+        liked_tracks.forEach((track) => {
             track.isOwner = track.owner_id === userId
         });
-        uploaded_tracks.map((track) => {
-            track.isLiked = liked_tracks.includes(track);
+        uploaded_tracks.forEach((track) => {
+            track.isLiked = liked_tracks.some(liked_track => track.id === liked_track.id);
         });
     }
+
+    console.log({
+        uploaded_tracks, 
+        created_playlists, 
+        saved_playlists, 
+        liked_tracks
+    });
 
     return {
         uploaded_tracks, 
@@ -88,6 +95,7 @@ module.exports.getCataloguesOfUser = async (userId, catalogueType) => {
 
 module.exports.getSavedPlaylists = async function (savedQuery) {
     const saved_playlists = [];
+    console.log(savedQuery);
     const saved_playlists_id_collection = await PlaylistCatalogue.findAll(savedQuery);
 
     for(let playlist of saved_playlists_id_collection){
