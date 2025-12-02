@@ -26,8 +26,8 @@ class Playlist {
             const prev = i-1 >= 0 ? i-1 : this.tracks.length - 1;
             const next = i+1 <= this.tracks.length - 1 ? i+1 : 0;
 
-            this.tracks[i].nextAudio = this.tracks[next];
-            this.tracks[i].prevAudio = this.tracks[prev];
+            this.tracks[parseInt(i)].nextAudio = this.tracks[parseInt(next)];
+            this.tracks[parseInt(i)].prevAudio = this.tracks[parseInt(prev)];
         }
     }
 }

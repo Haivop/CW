@@ -108,7 +108,7 @@ module.exports.editPlaylist = async (req, res) => {
     if(playlist.owner_id === userId) res.status(200).end();
 };
 
-const deletePlaylistFromCatalogue = async (req, res) => {
+const deletePlaylistFromCatalogue = async (req, res, next) => {
     if(!req.session.user) res.status(403).next(new Error("No Access").status = 403);
     
     const playlistId = req.params.playlistId;
@@ -116,6 +116,6 @@ const deletePlaylistFromCatalogue = async (req, res) => {
         queryUser_PlaylistIdIntersection(req.session.user, playlistId)
     ).catch((err) => { console.log(err)});
 
-    if(req.session.user) res.status(200).redirect(req.originalUrl);
+    if(req.session.user) res.status(200).end();
 };
 

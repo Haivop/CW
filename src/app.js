@@ -61,8 +61,9 @@ app.get("/search", search)
 
 app.use((error, req, res, next) => {
 	switch(error.status){
-		case 404: res.render("404-page", { loggedIn: isLoggedIn(req) });
-		case 403: res.render("403-page", { loggedIn: false });
+		case 404: res.render("404-page", { loggedIn: isLoggedIn(req) }); break;
+		case 403: res.render("403-page", { loggedIn: false }); break;
+		default: console.log(error.message);
 	}
 });
 
