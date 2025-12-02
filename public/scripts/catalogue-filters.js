@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     for(let filter of filters){
         filter.addEventListener("click", (event) => {
             const key = event.target?.attributes?.value?.value;
-            if (!key || !abreviationDict[key]) return;
+            if (!key || !(key in abreviationDict)) return;
 
             const abbreviation = abreviationDict[key];
             const values = Object.values(abreviationDict);

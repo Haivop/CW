@@ -50,12 +50,12 @@ module.exports.queryById = (compareId) => {
 };
 
 module.exports.mergePatch = async (newData, oldData) => {
-    for(let key in newData){
-        if(oldData[key] === undefined) throw new Error("wrong key in put request body");
+    const oldKeys = Object.keys(oldData)
+    for(let key of Object.keys(newData)){
+        if(!(oldKeys.includes(key))) throw new Error("wrong key in put request body");
         else if(!newData[key]) continue;
 
-        sanitizeHtml(newData[key]);
-        oldData[key] = newData[key];
+        oldData[key] = sanitizeHtml(newData[key]);
     };
 
     return oldData;
