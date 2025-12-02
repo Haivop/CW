@@ -1,4 +1,4 @@
-import { base_url } from "./script";
+import { base_url } from "./script.js";
 
 async function like() {
     fetch(window.location.href, {

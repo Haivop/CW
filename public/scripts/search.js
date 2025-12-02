@@ -1,4 +1,4 @@
-import { base_url } from "./script";
+import { base_url } from "./script.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("search");

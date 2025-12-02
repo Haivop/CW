@@ -9,29 +9,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for(let filter of filters){
         filter.addEventListener("click", (event) => {
-            console.log(event.target.attributes.value);
-            const matchRegExp = new RegExp(`t=.*${abreviationDict[event.target.attributes.value.value]}.*`);
-            const abreviation = abreviationDict[event.target.attributes.value.value];
+            const key = event.target?.attributes?.value?.value;
+            if (!key || !abreviationDict[key]) return;
+
+            const abbreviation = abreviationDict[key];
             const url = window.location.href;
 
-            if(url.match(matchRegExp)){
-                const replaceRegExp = new RegExp(`(?:\\?t=)?${abreviation},?$`)
+            const hasT = url.includes("?t=");
+            const hasThis = url.includes(`${abbreviation},`) || url.endsWith(abbreviation);
+            const hasAny = ["upl", "lk", "cr", "sv"].some(a => url.includes(a));
 
-                if(!url.match(replaceRegExp)) {
-                    window.location.href = url.replace(new RegExp(`${abreviation},`), "");
+            // Якщо в URL вже є t= з абревіатурами
+            if (hasAny) {
+                if (hasThis) {
+                    // Видаляємо abbr
+                    let newUrl = url
+                        .replace(`${abbreviation},`, "")
+                        .replace(`,${abbreviation}`, "")
+                        .replace(`${abbreviation}`, "");
+
+                    // видаляємо зайві коми та зайвий "?"
+                    newUrl = newUrl.replace(/,+/g, ",")
+                                .replace(/,\?/g, "?")
+                                .replace(/\?$/, "");
+
+                    window.location.href = newUrl;
                 } else {
-                    window.location.href = url.replace(replaceRegExp, "");
+                    // Для інших абревіатур — видаляємо їх і ставимо наш abbr
+                    let newUrl = url;
+
+                    ["upl","lk","cr","sv"].forEach(a => {
+                        newUrl = newUrl
+                            .replace(`${a},`, "")
+                            .replace(`,${a}`, "")
+                            .replace(a, "");
+                    });
+
+                    newUrl = newUrl.replace(/,+/g, ",")
+                                .replace(/\?t=,/, "?t=")
+                                .replace(/\?t=$/, `?t=${abbreviation},`);
+
+                    window.location.href = newUrl;
                 }
-
-                return;
-            }
-            
-            if(url.match(/\/catalogue\?t=/)) {
-                window.location.href = url.concat(`${abreviation},`);
                 return;
             }
 
-            window.location.href = url.concat(`?t=${abreviation},`);
+            // Якщо параметр t вже існує
+            if (hasT) {
+                window.location.href = url + `${abbreviation},`;
+                return;
+            }
+
+            // Якщо t ще немає
+            window.location.href = url + `?t=${abbreviation},`;
         });
     };
 });

@@ -1,4 +1,4 @@
-import { base_url } from "./script";
+import { base_url } from "./script.js";
 
 class AudioWithRef {
     constructor(element, url){

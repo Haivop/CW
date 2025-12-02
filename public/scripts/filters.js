@@ -10,8 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for(let filter of filters){
         filter.addEventListener("click", (event) => {
-            const matchRegExp = new RegExp(`&f=.*${abreviationDict[event.target.innerHTML.toLowerCase()]}.*`);
-            const abreviation = abreviationDict[event.target.innerHTML.toLowerCase()];
+            if(!Object.keys(abreviationDict).includes(event.target.attributes.value.value)) return;
+            const matchRegExp = new RegExp(`&f=.*${abreviationDict[event.target.attributes.value.value]}.*`);
+            const abreviation = abreviationDict[event.target.attributes.value.value];
             let url = window.location.href;
 
             if(url.match(matchRegExp)){
