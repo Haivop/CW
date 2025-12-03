@@ -58,10 +58,11 @@ module.exports.trackPage = async (req, res) => {
         });
     const savedPlaylists = await getSavedPlaylists(querySaved(userId))
         .catch((err) => {
-                if(err) console.log(err);
-            });
+            if(err) console.log(err);
+        });
 
     const cataloguePlaylists = createdPlaylists.concat(savedPlaylists);
+    console.log(cataloguePlaylists);
 
     let playlistsContainingTrack = await track.getPlaylists({raw: true});
     playlistsContainingTrack = await appendPlaylistsMeta(userId, playlistsContainingTrack);
@@ -69,7 +70,7 @@ module.exports.trackPage = async (req, res) => {
     const isLiked = await checkIsLiked(userId, trackId);
     const isOwner = track.owner_id === userId;
 
-    if(track.public_flag === true) 
+    if(track.public_flag === true){
         res.render('track-page', {
             track, 
             cataloguePlaylists, 
@@ -78,6 +79,8 @@ module.exports.trackPage = async (req, res) => {
             isLiked,
             isOwner,
         });
+    };
+        
 };
 
 module.exports.addTrackToPlaylists = async (req, res) => {
@@ -152,13 +155,15 @@ module.exports.editTrack = async (req, res) => {
     const newTrackData = req.body;
     newTrackData.image_url = req.file ? req.file.path : null;
 
-    console.log(newTrackData);
+    console.log(newTrackData, track.dataValues);
     
     track = await mergePatch(newTrackData, track)
         .catch((err) => {
             if(err) console.log(err)
         });
 
-    track.save();
+    console.log(track);
+
+    track.save().catch((err) => console.log(err));
     if(track.owner_id === userId) res.status(200).end();
 };

@@ -28,15 +28,15 @@
     </div>
     
     <div class="panel">
-        <button class="btn" id="like-btn" onclick="like()">Like | <span><%=track.likes%></span></button> 
+        <button class="btn" id="like-btn">Like | <span><%=track.likes%></span></button> 
 
         <% if(loggedIn){ %>
-            <button class="btn" onclick="addTrackToPlaylists()">Add to Playlist</button> 
+            <button id="add-to-playlist" class="btn">Add to Playlist</button> 
         <%};%>
 
         <% if(isOwner){ %>
-            <button class="btn" id="edit-btn" onclick="editTrack()">Edit</button>
-            <button class="btn" id="delete-btn" onclick="deleteTrack()">Delete</button>
+            <button class="btn" id="edit-btn">Edit</button>
+            <button class="btn" id="delete-btn"">Delete</button>
         <%};%>
 
         <a class="btn" href="/profiles/<%=track.owner_id%>">Profile</a>
@@ -51,6 +51,12 @@
                 <a href="../playlists/<%=playlist.id%>">
                     <%=playlist.title%>
                 </a>
+
+                <% if(playlist.isOwner){%>
+                <button id="rmv-track-from-playlist" class="icon clickable" title="Remove from Playlist" value="<%=playlist.id%>">
+                    <i class="fa-solid fa-minus"></i>
+                </button>
+                <%};%>
             </li>
         <%};%>
     </ul>
@@ -62,16 +68,20 @@
     <%- include('components/contextmenus/playlist') %>
     
     <form class="hidden centered-pop-up" id="add-track-form" method="POST" action="/tracks/<%=track.id%>">
-        <select multiple name="playlists" id="select-playlists" class="dropdown-menu">
+        <%if(!cataloguePlaylists){%>
+            <div>You have no usable playlists in catalogue...</div>
+        <%} else {%>    
+            <select multiple name="playlists" id="select-playlists" class="dropdown-menu">
             <%for(let playlist of cataloguePlaylists){%>
                 <option value="<%=playlist.id%>"><%=playlist.title%></option>
             <%};%>    
-        </select>
-        <br>
-        <button class="btn" type="submit">Add</button>
+            </select>
+            <br>
+            <button class="btn" type="submit">Add</button>
+        <%};%> 
     </form>
 
-    <div class="hidden centered-pop-up" id="edit-track">
+    <div class="hidden centered-pop-up pop-up-form" id="edit-track">
         <label for="title-inp">Title</label>
         <input type="text" name="title" id="title-inp" value="<%=track.title%>"><br>
 
@@ -87,7 +97,7 @@
         <label for="image-inp">Image</label>
         <input type="file" name="image" id="image-inp"><br>
 
-        <button class="btn" onclick="sendEdittedTrack()">Edit</button>
+        <button class="btn" id="edit-sbm-btn">Edit</button>
     </div>
 
     <div id="overlay" class="overlay hidden"></div>

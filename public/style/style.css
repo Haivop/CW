@@ -405,13 +405,6 @@ img.on-page{
     padding: var(--padding-main);
 }
 
-#edit-track > input{
-    background-color: var(--background-color);
-    border: 1px var(--main-color);
-    border-radius: var(--radius);
-    color: var(--accent-color);
-}
-
 #edit-track > .btn, #add-track-form > .btn{
     padding: var(--padding-mini);
 }
@@ -675,6 +668,11 @@ img.on-page{
     background-color: var(--additional-color);
     padding: var(--padding-main);
     border-radius: var(--radius);
+    color: white;
+}
+
+.pop-up-form > .btn{
+    margin: var(--margin);
 }
 
 .pop-up-form > *{

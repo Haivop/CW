@@ -4,6 +4,7 @@ const node_process = require('node:process');
 node_process.loadEnvFile("./config/.env");
 const fs = require('node:fs');
 const AdmZip = require('adm-zip');
+const path = require("path");
 
 const sequelize = require("../db/sequelize_connection");
 const Playlist = require("../models/PlaylistModel")[0];
@@ -58,20 +59,42 @@ module.exports.playlistPage = async (req, res) => {
 
 module.exports.downloadPlaylist = async (req, res) => {
     const playlist = await Playlist.findByPk(req.params.playlistId);
+    if (!playlist) return res.status(404).send("Playlist not found");
     const tracks = await playlist.getTracks({ raw: true });
     const zipper = new AdmZip();
 
     for(let track of tracks){
-        zipper.addLocalFile(process.env.rootFiles + track.audio_url);
+        const filePath = path.join(process.env.rootFiles, track.audio_url);
+
+        if (fs.existsSync(filePath)) {
+            zipper.addLocalFile(filePath);
+        }
     }
 
-    const temp_file_path = process.env.rootFiles + "public\\temp\\download_playlist" + Date.now() + ".zip";
-    zipper.writeZip(temp_file_path);
+    const tempFilePath = path.join(
+        process.env.rootFiles,
+        "public",
+        "temp",
+        `download_playlist_${Date.now()}.zip`
+    );
+
+    console.log(tempFilePath, zipper);
+    zipper.writeZip(tempFilePath);
 
     res.setHeader('Content-type','application/zip');
-    res.sendFile(temp_file_path);
+    res.sendFile(tempFilePath, (err) => {
+        try {
+            if (fs.existsSync(tempFilePath)) {
+                fs.unlinkSync(tempFilePath);
+            }
+        } catch (e) {
+            console.error("Failed to delete temp file:", e);
+        }
 
-    fs.unlinkSync(temp_file_path);
+        if (err) {
+            console.error("Error sending zip:", err);
+        }
+    });
 };
 
 module.exports.addPlaylistToCatalogue = async (req, res) => {

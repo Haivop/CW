@@ -26,7 +26,7 @@ module.exports.login = async (req, res, next) => {
             raw: true,
         });
 
-        if(user == [] || !user || user === null){
+        if(!user || user === null){
             const error = new Error("No such user!");
             error.status = 403;
             next(error);
@@ -65,7 +65,6 @@ module.exports.accountPage = async (req, res) => {
         raw: true,
     }); 
 
-    const likedCount = likedTracks.length;
     for(let track of likedTracks){
         track.artists = track.artists.split(/\s*[,;]\s*/);
         track.genres = track.genres.split(/\s*[,;]\s*/);
@@ -107,6 +106,7 @@ module.exports.signUp = async (req, res) => {
     const BYTE_TO_STRING_ENCODING = "hex";
 
     const { username, email, password } = req.body;
+    console.log(req.body);
 
     const salt = crypto
       .randomBytes(SALT_LENGTH)
@@ -119,9 +119,9 @@ module.exports.signUp = async (req, res) => {
         password: hashedPassword,
         email: sanitizeHtml(email),
         password_salt: salt,
-    })
-    .then( res.redirect("/") )
-    .catch((err) => { console.error("Error while creating user account" + err) });
+    }).catch(
+        (err) => console.log("Error while creating user account" + err)
+    ).then(this.login(req, res));
 }
 
 

@@ -19,11 +19,12 @@ module.exports.search = async (req, res) => {
 
     const substringSearch = { [Op.substring]: `${searchQuery}` }
 
-    const titleQuery = filter == "" || filter.match("tr")  ? substringSearch : null;
-    const genresQuery = filter == "" || filter.match("gn") ? substringSearch : null;
-    const artistsQuery = filter == "" || filter.match("art") ? substringSearch : null;
+    const titleQuery = filter === "" || filter.match("tr")  ? substringSearch : null;
+    const genresQuery = filter === "" || filter.match("gn") ? substringSearch : null;
+    const artistsQuery = filter === "" || filter.match("art") ? substringSearch : null;
     
-    if(!(titleQuery && genresQuery && artistsQuery)){
+    if(titleQuery || genresQuery || artistsQuery){
+        console.log(titleQuery, genresQuery, artistsQuery)
         tracks = await Track.findAll({
             where: {
                 [Op.or]:{ 
@@ -40,7 +41,7 @@ module.exports.search = async (req, res) => {
         tracks = await appendTracksMeta(userId, tracks);
     };
     
-    if(filter == "" || filter.match("pl")){
+    if(filter === "" || filter.match("pl")){
         playlists = await Playlist.findAll({
             where: {
                 title: substringSearch,
@@ -53,7 +54,7 @@ module.exports.search = async (req, res) => {
         playlists = await appendPlaylistsMeta(userId, playlists);
     };
     
-    if(filter == "" || filter.match("pr")){
+    if(filter === "" || filter.match("pr")){
         profiles = await User.findAll({
             where: {
                 username: substringSearch,
@@ -64,7 +65,9 @@ module.exports.search = async (req, res) => {
         });
     };
 
-    console.log(playlists);
+    console.log(tracks, 
+        playlists, 
+        profiles);
 
     if(searchQuery) res.render('home-page', {
         tracks, 
