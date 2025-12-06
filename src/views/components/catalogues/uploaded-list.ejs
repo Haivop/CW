@@ -13,7 +13,7 @@
 
                             <% let counter = 0;%>
                             <% for (artist of track.artists.split(/\s*[,;]\s*/)) {%>
-                                <a class="artists" href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
+                                <a class="artists" href="../search?q=<%=artist%>&f=art,"><%=artist%></a>
                                 <% if(counter === 3) break;%>
                                 <% counter++; %>
                             <%};%>

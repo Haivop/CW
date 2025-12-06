@@ -21,13 +21,16 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.assign(base_url.concat("/tracks/" + event.target.attributes.value.value));
     });
 
-    document.getElementById("logout").addEventListener("click", (event) => {
-        fetch(base_url + "/login", {
-                method: 'DELETE',
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8',
-                    'Accept': 'application/json'
-                },
-        }).then(() => window.location.reload());
-    });
+    const logoutButton = document.getElementById("logout")
+    if(logoutButton){
+        logoutButton.addEventListener("click", (event) => {
+            fetch(base_url + "/login", {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                        'Accept': 'application/json'
+                    },
+            }).then(() => window.location.reload());
+        });
+    }
 });

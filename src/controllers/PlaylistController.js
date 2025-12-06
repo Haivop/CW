@@ -28,6 +28,7 @@ module.exports.createPlaylist = async (req, res) => {
     if(req.session.user) res.redirect('/catalogue');
 };
 
+
 module.exports.deletePlaylist = async (req, res) => {
     if(!req.session.user) res.status(403).end();
     const playlistId = req.params.playlistId;
@@ -35,7 +36,7 @@ module.exports.deletePlaylist = async (req, res) => {
     await Playlist.destroy(queryById(playlistId)).catch((err) => { console.log(err) });
 
     if(req.originalUrl.match(/\/playlists/)) res.status(204).redirect("/");
-    else res.status(204);
+    else res.status(204).end();
 };
 
 
@@ -97,12 +98,19 @@ module.exports.downloadPlaylist = async (req, res) => {
     });
 };
 
+
 module.exports.addPlaylistToCatalogue = async (req, res) => {
     if(!req.session.user) res.status(403).end();
 
     const playlistId = req.params.playlistId;
+    if(!(playlistId || req.session.user)){
+        const error = new Error("No such playlist found");
+        error.status = 404;
+        next(error);
+    }
     const query = queryUser_PlaylistIdIntersection(req.session.user, playlistId)
     const isAlreadySaved = await PlaylistCatalogue.findOne(query);
+
 
     if(isAlreadySaved != null) await deletePlaylistFromCatalogue(req, res);
     else {

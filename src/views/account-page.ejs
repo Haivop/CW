@@ -4,7 +4,7 @@
 
     <div id="user-grid" class="mr-top-bottom">
         <img id="profile-avatar" class="image avatar on-page" src="<%=user.avatar_url%>" alt="">
-        <h2 class="profile-name"><%=user.username%><button class="btn" onclick="editAccount()">Edit</button></h2><br>
+        <h2 class="profile-name"><%=user.username%><button id="edit-account-btn" class="btn">Edit</button></h2><br>
 
         <div id="tracks-chart">
             <h3>Tracks Top5</h3>
@@ -12,16 +12,6 @@
                 <% for(let track of top5Tracks){%>
                     <li isLiked="true" isOwner="<%=track.isOwner%>" class="track interactable">
                         <a href="../tracks/<%=track.id%>"><%=track.title%></a>
-
-                        <% for (artist of track.artists) {%>
-                            <a href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
-                        <%};%>
-
-                        <% for (genre of track.genres) {%>
-                            <a href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
-                        <%};%>
-
-                        <span><%=track.likes%></span>
                     </li>
                 <%};%>
             </ul>
@@ -54,7 +44,7 @@
         </div>
     </div>
     
-    <form id="edit-account" class="centered-pop-up" method="post" action="/account" enctype="multipart/form-data">
+    <form id="edit-account" class="centered-pop-up pop-up-form" method="post" action="/account" enctype="multipart/form-data">
         <label for="username">Username</label>
         <input name="username" id="username" type="text" autocomplete="off"> <br>
 

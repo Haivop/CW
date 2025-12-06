@@ -32,40 +32,27 @@ class Playlist {
             this.tracks[parseInt(i)].prevAudio = this.tracks[parseInt(prev)];
         }
     }
-}
+};
 
-async function addPlaylist() {
+document.getElementById("add-playlist-btn").addEventListener("click", () => {
     fetch(window.location.href, {
         method: "POST",
     });
-};
+});
 
-async function deletePlaylist(){
+document.getElementById("delete-playlist-btn").addEventListener("click", () => {
     fetch(window.location.href, {
         method: "DELETE",
-    });
-}
-
-async function sendEdittedPlaylist(){
-    const formData = new FormData();
-
-    const title = document.getElementById("title-inp");
-    const image_file = document.getElementById("image-inp")
-
-    formData.append(title.name, title.value);
-    formData.append(image_file.name, image_file.files[0]);
-
-    fetch(window.location.href, {
-        method: "PUT",
-        body: formData,
-    }).then(() => {
-        window.location.reload();
     }).catch((err) => {
-        if(err) console.log(err);
-    });
-};
+        if(err) console.error(err);
+    }).then(() => window.location.reload());
+});
 
-async function removeFromPlaylist(playlistId, trackId){
+document.getElementById("remove-track-from-playlist-btn").addEventListener("click", () => {
+    const button = document.getElementById("remove-track-from-playlist-btn");
+    const playlistId = button.attributes.playlist.value;
+    const trackId = button.attributes.track.value;
+
     const content = {
         playlists: playlistId
     }
@@ -78,7 +65,7 @@ async function removeFromPlaylist(playlistId, trackId){
     }).then(() => {
        window.location.reload();
     });
-};
+});
 
 document.addEventListener("DOMContentLoaded", async () => {
     const playbackBtn = document.getElementById("start-playback");
@@ -140,10 +127,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 });
 
-function editPlaylist(){
+document.getElementById("edit-playlist-btn").addEventListener("click", () => {
     $("#edit-playlist").toggle(100);
     $("#overlay").toggle(1);
-}
+});
+
+document.getElementById("send-editted-btn").addEventListener("click", () => {
+    const formData = new FormData();
+
+    const title = document.getElementById("title-inp");
+    const image_file = document.getElementById("image-inp")
+
+    formData.append(title.name, title.value);
+    formData.append(image_file.name, image_file.files[0]);
+
+    fetch(window.location.href, {
+        method: "PUT",
+        body: formData,
+    }).then(() => {
+        window.location.reload();
+    }).catch((err) => {
+        if(err) console.log(err);
+    });
+});
 
 $(document).bind("mousedown", function (e) {
     if (!$(e.target).parents("#edit-playlist").length > 0) {

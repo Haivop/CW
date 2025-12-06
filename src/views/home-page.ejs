@@ -7,7 +7,7 @@
         </div>
         <div class="main-container">
             <section class="container">
-                <h3>Playlists</h3>
+                <h3 class="block-title">Playlists</h3>
                 <ul id="playlists_list">
                     <% playlists.forEach((playlist) => {%>
                         <li isSaved="<%=playlist.isSaved%>" isOwner="<%=playlist.isOwner%>" class="box playlist interactable" value="<%=playlist.id%>">
@@ -21,7 +21,7 @@
             </section>
             
             <section class="container">
-                <h3>Tracks</h3>
+                <h3 class="block-title">Tracks</h3>
                 <ul id="tracks_list">
                     <% tracks.forEach((track) => {%>
                         <li isLiked="<%=track.isLiked%>" isOwner="<%=track.isOwner%>" class="box track interactable" value="<%=track.id%>">
@@ -51,7 +51,7 @@
             </section>
 
             <section class="container">
-                <h3>Profiles</h3>
+                <h3 class="block-title">Profiles</h3>
                 <ul id="profiles_list">
                     <% profiles.forEach((profile) => {%>
                         <li class="box profile" value="<%=profile.id%>">

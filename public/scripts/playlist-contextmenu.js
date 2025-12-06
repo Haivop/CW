@@ -8,8 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const isOwnerFlag = $(this).attr("isOwner");
         const href = $(this).children("a").attr("href");
 
-        console.log($(this).children("a").attr("href"));
-
         if($(this).hasClass("playlist")) {
             const isSavedFlag = $(this).attr("isSaved");
             const saveContextButton = $("#playlist-menu #save-pl-opt");
@@ -104,7 +102,7 @@ async function savePlaylist(href){
 }
 
 async function deletePlaylist(href){
-    fetch(base_url + href, {
+    fetch(base_url.concat(href), {
         method: "DELETE"
-    }).then((Response) => console.log(Response.status));
-}
+    }).then(() => window.location.reload());
+};

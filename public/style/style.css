@@ -1,16 +1,19 @@
 :root{
-    --background-color: #A8C4EC;
-    --main-color: #5379AE;
-    --additional-color: #06457f;
-    --support-color: white;
-    --accent-color: #87BAC3;
-    --text-color: #016B61;
+    --background-color: #2C2C2C;
+    --additional-color: #1A1A1A;
+    --support-color: #444444;
+    --accent-color: #A8DADC;
+    --dash-border-color: #B39CD0;
+    --text-color: #E4E4E4;
+    --contrast-shadow: white;
+    --shadow: #2C2C2C;
     --margin: 0.8em;
     --padding-main: 1rem;
     --padding-mini: 0.3rem;
     --radius: 0.8rem;
     --list-image-size: 40px;
     --on-page-image-size: 140px;
+    --animation-duration: 50ms;
 }
 
 body{
@@ -20,6 +23,7 @@ body{
     display: flex;
     flex-direction: column;
     color: var(--text-color);
+    background-color: var(--background-color);
 
     margin: 0;
     width: 100%;
@@ -31,8 +35,69 @@ header{
     justify-content: space-between;
     align-content: center;
     background-color: var(--additional-color);
+    text-shadow: 0.5px 0.5px 0.5px var(--shadow);
     top: 0;
     position: sticky;
+}
+
+a {
+    color: var(--accent-color);
+    transition: var(--animation-duration);
+}
+
+a:link{
+    color: var(--accent-color);
+}
+
+a:active{
+    color: var(--accent-color);
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+input{
+    background-color: var(--additional-color);
+    color: var(--accent-color);
+    border: 0px;
+    padding: var(--padding-mini);
+}
+
+input[type="file"]{
+    padding: var(--padding-main);
+    border-radius: var(--radius);
+    background-color: transparent;
+    border: 2px var(--accent-color) dashed;
+    transition: var(--animation-duration);
+}
+
+input[type="file"]:hover{
+    color: var(--text-color);
+    border: 2px var(--text-color) dashed;
+
+    &::file-selector-button{
+        background-color: var(--additional-color);
+        color: var(--text-color);
+    }
+}
+
+input[type="file"]::file-selector-button{
+    background-color: var(--accent-color);
+    border: 0px;
+    color: var(--support-color);
+    padding: calc(var(--padding-main)/2);
+    border-radius: calc(var(--radius)/3 * 2);
+    margin-right: var(--margin);
+}
+
+input[type="file"]::file-selector-button:hover{
+    background-color: var(--background-color);
+}
+
+input[type="file"]::file-selector-button:active{
+    background-color: var(--additional-color);
 }
 
 header a{
@@ -51,6 +116,13 @@ header a:hover{
     color: var(--additional-color);
 }
 
+header a:active{
+    background-color: var(--accent-color);
+    color: var(--additional-color);
+    box-shadow: 0px 1px 0px var(--shadow);
+    opacity: 80%;
+}
+
 header .btn{
     padding: var(--padding-main);
 }
@@ -67,21 +139,35 @@ header .btn{
 }
 
 #search-btn{
+    background-color: var(--additional-color);
+    color: var(--text-color);
+    transition: 0.3s;
     height: 1.5rem;
     width: 4rem;
 }
 
-#search{
-    text-indent: var(--margin);
-    width: 600px;
+#search-btn:hover {
+    background-color: var(--background-color);
+}
+
+#search-btn:active {
+    background-color: var(--additional-color);
 }
 
 #search, #search-btn{
-    background-color: var(--support-color);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 14px;
+
     border: 1px;
     border-radius: var(--radius);
-    color: var(--text-color);
     padding: var(--padding-mini);
+}
+
+#search{
+    background-color: var(--background-color);
+    color: var(--accent-color);
+    text-indent: var(--margin);
+    width: 600px;
 }
 
 #search::placeholder{
@@ -113,26 +199,14 @@ header .btn{
     width: var(--list-image-size) ;
 }
 
-a {
-    color: var(--accent-color);
-}
-
-a:link{
-    color: var(--accent-color);
-}
-
-a:active{
-    color: var(--accent-color);
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-}
-
 .title{
     font-weight: bold;
     font-size: 18px;
+}
+
+.block-title{
+    font-weight: bold;
+    font-size: 24px;
 }
 
 .artists, .genres, .likes{
@@ -143,11 +217,11 @@ ul {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     height: 100%;
+    background-color: var(--background-colors);
 }
 
-.main-container{
-    padding-left: calc(var(--padding-main) * 2);
-    padding-right: calc(var(--padding-main) * 2);
+.main-container, .add-container{
+    background-color: var(--background-color);
     align-self: center;
     height: 100%;
 }
@@ -161,12 +235,17 @@ ul {
     width: 99.5%;
     display: flex;
     align-items: center;
-    transition: 0.2s;
+    transition: var(--animation-duration);
     animation-timing-function: ease-in;
 }
 
+.box:has(.icon:active){
+    background-clip: content-box;
+    opacity: 80%;
+}
+
 .box:hover .icon{
-    color: white;
+    color: var(--contrast-shadow);
 }
 
 .box > *{
@@ -192,27 +271,31 @@ ul {
 
 .login-grid{
     background-image: url("http://localhost:3000/public/images/system/login_page_background.jpg");
-    background-size: contain;
+    background-size: cover;
     display: grid;
     grid-template-columns: 1fr 1fr;
     height: 100%;
 }
 
 .login-header{
+    color: var(--accent-color);
     font-size: 52px;
 }
 
 .login-grid > div + div{
-    background-color: aliceblue;
+    background-color: var(--support-color);
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-left: 150px;
+    margin-right: 200px;
 }   
+
 
 #login-form, #login-form > form{
     display: flex;
     flex-direction: column;
-    background-color: aliceblue;
+    background-color: var(--support-color);
     align-items: center;
 }
 
@@ -241,17 +324,22 @@ img.on-page{
 }
 
 .btn{
-    background-color: var(--support-color);
+    background-color: var(--additional-color);
     border: 1px;
     border-radius: var(--radius);
     color: var(--text-color);
     padding: var(--padding-mini);
+    transition: var(--animation-duration);
+    cursor: pointer;
     font-weight: 600;
 }
 
 .btn:hover{
-    background-color: var(--additional-color);
-    color: var(--support-color);
+    background-color: var(--support-color);
+}
+
+.btn:active{
+    background-color: var(--background-color);
 }
 
 .custom-menu {
@@ -414,7 +502,6 @@ img.on-page{
 }
 
 #add-track-form > select{
-    background-color: var(--background-color);
     border: 1px var(--main-color);
     padding: var(--padding-main);
     border-radius: var(--radius);
@@ -437,7 +524,8 @@ img.on-page{
 }
 
 #catalogue{
-    margin-top: 5px
+    padding-top: var(--padding-mini);
+    background-color: var(--background-color);
 }
 
 #upload-track{
@@ -449,44 +537,6 @@ img.on-page{
 #upload-track form{
     display: flex;
     flex-direction: column;
-}
-
-#upload-track form input{
-    background-color: var(--additional-color);
-    color: var(--accent-color);
-    border: 0px;
-    padding: var(--padding-mini);
-}
-
-#upload-track form input[type="file"]{
-    padding: var(--padding-main);
-    border-radius: var(--radius);
-    background-color: transparent;
-    border: 2px var(--additional-color) dashed;
-}
-
-#upload-track form input[type="file"]:hover{
-    color: var(--text-color);
-    border: 2px var(--text-color) dashed;
-
-    &::file-selector-button{
-        background-color: var(--additional-color);
-        color: white;
-    }
-}
-
-#upload-track form input[type="file"]::file-selector-button{
-    background-color: var(--accent-color);
-    border: 0px;
-    color: white;
-    padding: calc(var(--padding-main)/2);
-    border-radius: calc(var(--radius)/3 * 2);
-    margin-right: var(--margin);
-}
-
-#upload-track form input[type="file"]::file-selector-button:hover{
-    background-color: var(--additional-color);
-    color: white;
 }
 
 #upload-track a{
@@ -582,49 +632,6 @@ img.on-page{
     margin: var(--margin);
 }
 
-#edit-account{
-    background-color: var(--additional-color);
-    padding: var(--padding-main);
-    border: 1px var(--main-color);
-    border-radius: var(--radius);
-    color: white;
-}
-
-#edit-account > *{
-    margin: var(--margin);
-}
-
-#edit-account input[type="file"]{
-    padding: var(--padding-main);
-    border-radius: var(--radius);
-    background-color: transparent;
-    border: 1px var(--additional-color) dashed;
-}
-
-#edit-account input[type="file"]:hover{
-    color: var(--accent-color);
-    border: 2px var(--accent-color) dashed;
-
-    &::file-selector-button{
-        background-color: var(--additional-color);
-        color: white;
-    }
-}
-
-#edit-account input[type="file"]::file-selector-button{
-    background-color: var(--accent-color);
-    border: 0px;
-    color: white;
-    padding: calc(var(--padding-main)/2);
-    border-radius: calc(var(--radius)/3 * 2);
-    margin-right: var(--margin);
-}
-
-#edit-account input[type="file"]::file-selector-button:hover{
-    background-color: var(--additional-color);
-    color: white;
-}
-
 #profile-avatar{
     justify-self: center;
 }
@@ -640,16 +647,28 @@ img.on-page{
 }
 
 .audio-player-btn{
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
     border: none;
     border-radius: 50%;
     background-color: var(--additional-color);
     color: var(--accent-color);
+    transition: calc(var(--animation-duration) * 2);
 }
 
 .audio-player-btn:hover{
-    color: white;
+    width: 45px;
+    height: 45px;
+    text-shadow: 1px 1px 1px var(--contrast-shadow);
+    border: 1px solid var(--accent-color);
+}
+
+.audio-player-btn:active{
+    width: 43px;
+    height: 43px;
+    text-shadow: 1px 1px 1px var(--contrast-shadow);
+    opacity: 70%;
 }
 
 #playlist-page{
@@ -660,15 +679,15 @@ img.on-page{
 .icon{
     border: none;
     background-color: transparent;
-    color: var(--additional-color);
+    color: var(--accent-color);
 }
 
 .pop-up-form{
     flex-direction: column;
-    background-color: var(--additional-color);
+    background-color: var(--background-color);
     padding: var(--padding-main);
     border-radius: var(--radius);
-    color: white;
+    color: var(--text-color);
 }
 
 .pop-up-form > .btn{
@@ -677,36 +696,4 @@ img.on-page{
 
 .pop-up-form > *{
     margin: var(--margin);
-}
-
-.pop-up-form input[type="file"]{
-    color: white;
-    padding: var(--padding-main);
-    border-radius: var(--radius);
-    background-color: transparent;
-    border: 1px var(--additional-color) dashed;
-}
-
-.pop-up-form input[type="file"]:hover{
-    color: var(--accent-color);
-    border: 2px var(--accent-color) dashed;
-
-    &::file-selector-button{
-        background-color: var(--additional-color);
-        color: white;
-    }
-}
-
-.pop-up-form input[type="file"]::file-selector-button{
-    background-color: var(--accent-color);
-    border: 0px;
-    color: white;
-    padding: calc(var(--padding-main)/2);
-    border-radius: calc(var(--radius)/3 * 2);
-    margin-right: var(--margin);
-}
-
-.pop-up-form input[type="file"]::file-selector-button:hover{
-    background-color: var(--additional-color);
-    color: white;
 }
