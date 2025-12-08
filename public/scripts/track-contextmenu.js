@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const loginFlag = $("#loggin-flag").val();
         const isOwnerFlag = $(this).attr("isOwner");
-        const href = $(this).children("a").attr("href");
+        const href = "/tracks/" + $(this).attr("value");
 
         if($(this).hasClass("track")) {
             const isLikedFlag = $(this).attr("isLiked");
@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     $("#track-menu li").click(function(){
         const href = $(this).parent("ul").attr("value");
+        console.log(href);
         switch($(this).attr("data-action")) {
             case "play": 
                 playTrack(href); 
@@ -91,8 +92,7 @@ async function playTrack(href){
 async function likeTrack(href){
     fetch(base_url + href, {
         method: "PATCH"
-    }).then((Response) => console.log(Response.status));
-    window.location.reload();
+    }).then(() => window.location.reload());
 }
 
 async function downloadTrack(href){
@@ -103,6 +103,6 @@ async function downloadTrack(href){
 async function deleteTrack(href){
     fetch(base_url + href, {
         method: "DELETE"
-    }).then((Response) => console.log(Response.status));
+    }).then(() => window.location.reload());
 }
 

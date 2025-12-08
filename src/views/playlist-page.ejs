@@ -3,84 +3,108 @@
     <%- include('components/header') %>
 
     <div id="playlist-page" class="flex-row">
-        <img id="playlist-image" class="image on-page mr" src="../<%=playlist.image_url%>" alt=""> <br>
+        <div>
+            <img id="playlist-image" class="image on-page mr" src="../<%=playlist.image_url%>" alt=""> <br>
 
-        <div class="flex-col">
-            <h2 id="playlist-title"><%=playlist.title%></h2>
+            <div id="playlist-controls" class="flex-col">
+                <h2 id="playlist-title"><%=playlist.title%></h2>
 
-            <div id="playlist-controls">
-                <button class="audio-player-btn" id="backward" title="Backward">
-                    <i class="fa-solid fa-backward-step"></i>
-                </button>
-                <button class="audio-player-btn" id="start-playback" title="Play/Pause" activated=false>
-                    <i class="fa-solid fa-play"></i>
-                </button> 
-                <button class="audio-player-btn" id="forward" title="Forward">
-                    <i class="fa-solid fa-forward-step"></i>
-                </button>
-                <button class="audio-player-btn" id="download" title="Download">
-                    <i class="fa-solid fa-download"></i>
-                </button>
+                <div id="playlist-controls">
+                    <button class="audio-player-btn" id="backward" title="Backward">
+                        <i class="fa-solid fa-backward-step"></i>
+                    </button>
+                    <button class="audio-player-btn" id="start-playback" title="Play/Pause" activated=false>
+                        <i class="fa-solid fa-play"></i>
+                    </button> 
+                    <button class="audio-player-btn" id="forward" title="Forward">
+                        <i class="fa-solid fa-forward-step"></i>
+                    </button>
+                    <button class="audio-player-btn" id="download" title="Download">
+                        <i class="fa-solid fa-download"></i>
+                    </button>
 
-                <% if(loggedIn){ %>
-                <button id="add-playlist-btn" class="audio-player-btn" title="Add Playlist to Catalogue">
-                   <i class="fa-solid fa-plus"></i> 
-                </button>
-                <%};%>
-
-                <% if(isOwner){ %>
-                <button id="edit-playlist-btn" class="audio-player-btn" title="Edit">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                </button>
-
-                <button id="delete-playlist-btn" class="audio-player-btn" title="Delete">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-                <%};%>
-            </div>
-            <div class="audio-duration"></div>
-                <ul>
-                    <% for(let track of tracks){%>
-                        <li isLiked="<%=track.isLiked%>" isOwner="<%=track.isOwner%>" class="box track interactable">
-                            <div class="left">
-                                <img class="list-item-img" src="../<%=track.image_url%>" alt="">
-                            
-                                <a class="title" href="../search?q=<%=track.title%>&f=tr,"> <%=track.title%> </a> <br>
-
-                                <% let counter = 0;%>
-                                <% for (artist of track.artists.split(/\s*[,;]\s*/)) {%>
-                                    <a class="artists" href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
-                                    <% if(counter === 3) break;%>
-                                    <% counter++; %>
-                                <%};%>
-                            </div>
-                            
-                            <div class="right">
-                                <% for (genre of track.genres.split(/\s*[,;]\s*/)) {%>
-                                <a class="genres" href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
-                                <%};%>
-
-                                <span class="likes"><%=Number(track.likes)%></span>
-                            </div>
-
-                            <audio class="track in-playlist" src="../tracks/<%=track.audio_url%>"></audio>
-
-                            <%if(isOwner){%>
-                            <button id="remove-track-from-playlist-btn" class="icon clickable" title="Remove from Playlist" playlist="<%=playlist.id%>", track="<%=track.id%>">
-                                <i class="fa-solid fa-minus"></i>
-                            </button>
+                    <% if(loggedIn){ %>
+                        <% const intent = isSaved ? "Delete" : "Add" %>
+                        <button id="add-playlist-btn" class="audio-player-btn" title="<%=intent%> Playlist to Catalogue">
+                            <% if(!isSaved){ %>
+                            <i class="fa-solid fa-plus"></i> 
+                            <%} else {%>
+                            <i class="fa-solid fa-xmark"></i>
                             <%};%>
-                        </li>
+                        </button>
                     <%};%>
-                </ul>
+
+                    <% if(isOwner){ %>
+                    <button id="edit-playlist-btn" class="audio-player-btn" title="Edit">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+
+                    <button id="delete-playlist-btn" class="audio-player-btn" title="Delete">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                    <%};%>
+                </div>
+
+                <div id="audio-player" class="flex-col hidden">
+                    <div id="audio-duration" class="flex-row">
+                        <span id="current-duration" class="time">00:00</span>
+                        <input class="audio-player" type="range">
+                        <span id="max-duration" class="time">01:39</span>
+                    </div>
+                </div>
             </div>
+
+            <ul class="flex-col" id="track-list">
+                <% for(let track of tracks){%>
+                    <li isLiked="<%=track.isLiked%>" isOwner="<%=track.isOwner%>" class="box track interactable" value="<%=track.id%>">
+                        <div class="left">
+                            <img class="list-item-img" src="../<%=track.image_url%>" alt="">
+                        
+                            <a class="title" href="../search?q=<%=track.title%>&f=tr,"> <%=track.title%> </a> <br>
+
+                            <% let counterArtists = 0;%>
+                            <% for (artist of track.artists.split(/\s*[,;]\s*/)) {%>
+                                <a class="artists" href="../search?q=<%=artist%>&f=art,"><%=artist%></a>
+                                <% if(counterArtists === 3){ %>
+                                    <span>...</span>
+                                <%break;%>
+                                <%}%>
+                                <% counterArtists++; %>
+                            <%};%>
+                        </div>
+                        
+                        <div class="right">
+                            <% let counterGenres = 0;%>
+                            <% for (genre of track.genres.split(/\s*[,;]\s*/)) {%>
+                                <a class="genres" href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
+                                <% if(counterGenres === 3){ %>
+                                    <span>...</span>
+                                <%break;%>
+                                <%}%>
+                                <% counterGenres++; %>
+                            <%};%>
+
+                            <span class="likes"><i class="fa-solid fa-heart" style="font-size: 12px;"></i><%=Number(track.likes)%></span>
+                        </div>
+
+                        <audio class="track in-playlist" src="../tracks/<%=track.audio_url%>"></audio>
+
+                        <%if(isOwner){%>
+                        <button id="remove-track-from-playlist-btn" class="icon clickable" title="Remove from Playlist" playlist="<%=playlist.id%>", track="<%=track.id%>">
+                            <i class="fa-solid fa-minus"></i>
+                        </button>
+                        <%};%>
+                    </li>
+                <%};%>
+            </ul>
         </div>
+    </div>
 
     <div id="edit-playlist" class="hidden centered-pop-up pop-up-form">
         <input type="text" name="title" id="title-inp" value="<%=playlist.title%>"> <br>
         <input type="file" name="image" id="image-inp"> <br>
 
-        <button id="send-editted-btn" class="btn" onclick="sendEdittedPlaylist()">Edit</button>
+        <button id="send-editted-btn" class="btn">Edit</button>
     </div>
 
     <div id="overlay" class="hidden overlay"></div>

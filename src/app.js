@@ -59,12 +59,20 @@ app.use('/public/scripts/', express.static(process.env.rootFiles + '/public/scri
 app.get("/", AppController.hubPage);
 app.get("/search", search)
 
-app.use((error, req, res, next) => {
-	switch(error.status){
-		case 404: res.render("404-page", { loggedIn: isLoggedIn(req) }); break;
-		case 403: res.render("403-page", { loggedIn: false }); break;
-		default: console.log(error.message);
-	}
+app.use((req, res) => {
+	res.render("error-page", { 
+		loggedIn: isLoggedIn(req), 
+		errorMessage: "Cant find such link",
+		errorCode: 404, 
+	});
+});
+
+app.use((error, req, res) => {
+	res.render("error-page", { 
+		loggedIn: isLoggedIn(req), 
+		errorMessage: error.message,
+		errorCode: error.status, 
+	});
 });
 
 module.exports = app;

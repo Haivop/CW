@@ -30,20 +30,29 @@
                             
                                 <a class="title" href="../search?q=<%=track.title%>&f=tr,"> <%=track.title%> </a> <br>
 
-                                <% let counter = 0;%>
+                                <% let counterArtists = 0;%>
                                 <% for (artist of track.artists.split(/\s*[,;]\s*/)) {%>
-                                    <a class="artists" href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
-                                    <% if(counter === 3) break;%>
-                                    <% counter++; %>
+                                    <a class="artists" href="../search?q=<%=artist%>&f=art,"><%=artist%></a>
+                                    <% if(counterArtists === 3){ %>
+                                        <span>...</span>
+                                    <%break;%>
+                                    <%}%>
+                                    <% counterArtists++; %>
                                 <%};%>
                             </div>
                             
                             <div class="right">
+                                <% let counterGenres = 0;%>
                                 <% for (genre of track.genres.split(/\s*[,;]\s*/)) {%>
-                                <a class="genres" href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
+                                    <a class="genres" href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
+                                    <% if(counterGenres === 3){ %>
+                                        <span>...</span>
+                                    <%break;%>
+                                    <%}%>
+                                    <% counterGenres++; %>
                                 <%};%>
 
-                                <span class="likes"><%=Number(track.likes)%></span>
+                                <span class="likes"><i class="fa-solid fa-heart" style="font-size: 12px;"></i><%=Number(track.likes)%></span>
                             </div>
                         </li>
                     <%});%>
@@ -56,8 +65,8 @@
                     <% profiles.forEach((profile) => {%>
                         <li class="box profile" value="<%=profile.id%>">
                             <img class="list-item-img profile" src="<%=profile.avatar_url%>" alt="">
-                            <a class="title" href="/profiles/<%=profile.id%>">
-                                <%=[profile.username]%>
+                            <a class="title" href="./search?q=<%=profile.username%>&f=pr,">
+                                <%=profile.username%>
                             </a>
                         </li>
                     <%});%>

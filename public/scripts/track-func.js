@@ -1,6 +1,32 @@
 import { base_url } from "./script.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+    $("#artists-menu-toggle").bind("click", function (event) {
+        $("#artists-menu").finish().toggle(100).
+            css({
+                top: event.pageY + "px",
+                left: event.pageX + "px",
+            });
+    });
+
+    $("#genres-menu-toggle").bind("click", (event) => {
+        $("#genres-menu").finish().toggle(100).
+            css({
+                top: event.pageY + "px",
+                left: event.pageX + "px",
+            });
+    });
+
+    $(document).bind("mousedown", function (e) {
+        if (!$(e.target).parents("#artists-menu").length > 0) {
+            $("#artists-menu").hide(100);
+        };
+
+    if (!$(e.target).parents("#genres-menu").length > 0) {
+            $("#genres-menu").hide(100);
+        };
+    });
+
     document.getElementById("like-btn").addEventListener("click", (event) => {
         fetch(window.location.href, {
                 method: 'PATCH',

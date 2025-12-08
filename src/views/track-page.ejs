@@ -1,109 +1,138 @@
 <%- include('components/html-head') %>
 <body>
     <%- include('components/header') %>
-    
-    <div class="track-info">
-        <img class="on-page" src="../<%=track.image_url%>" alt="">
+    <section id="track-page">
+        <section></section>
+        <section>
+            <div class="track-info">
+                <img class="on-page" src="../<%=track.image_url%>" alt="">
 
-        <div class="upper">
-            <h3><a href="../search?q=<%=track.title%>"><%=track.title%></a></h3>
+                <div class="upper">
+                    <h3><a href="../search?q=<%=track.title%>"><%=track.title%></a></h3>
+                </div>
+                
+                <div class="down flex-row">
+                    <button id="artists-menu-toggle" class="btn">Artists</button>
+                    <button id="genres-menu-toggle" class="btn mr-left">Genres</button>
+                </div>
 
-            <% for (genre of track.genres.split(/[,;]/)) {%>
-            <a href="../search?q=<%=genre%>&f=gn,"><%=genre%></a>
-            <%};%>
-        </div>
-        
-    
-        <div class="artists">
-            <% for (artist of track.artists.split(/[,;]/)) {%>
-                <a href="../search?q=<%=artist%>&f=ar,"><%=artist%></a>
-            <%};%>
-        </div>
+                <div class="audio-player">
+                    <audio controls preload="auto">
+                        <source src="<%=track.audio_url%>" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="flex-row center-align mr">
+                    <button class="audio-player-btn" id="like-btn" title="Like">
+                        <%if(isLiked){%>
+                        <i class="fa-solid fa-heart"></i>
+                        <%} else {%> 
+                        <i class="fa-regular fa-heart"></i>
+                        <%};%> 
+                    </button> | <span><%=track.likes%></span>
+                </div>
 
-        <div class="audio-player">
-            <audio controls preload="auto">
-                <source src="<%=track.audio_url%>" type="audio/mpeg">
-            </audio>
-        </div>
-    </div>
-    
-    <div class="panel">
-        <button class="btn" id="like-btn">Like | <span><%=track.likes%></span></button> 
 
-        <% if(loggedIn){ %>
-            <button id="add-to-playlist" class="btn">Add to Playlist</button> 
-        <%};%>
-
-        <% if(isOwner){ %>
-            <button class="btn" id="edit-btn">Edit</button>
-            <button class="btn" id="delete-btn"">Delete</button>
-        <%};%>
-
-        <a class="btn" href="/profiles/<%=track.owner_id%>">Profile</a>
-    </div>
-
-    <% if(playlistsContainingTrack){%>
-    <h3 class="header">Playlists Containing Track</h3>
-    <ul id="playlists-list">
-        <%for(let playlist of playlistsContainingTrack){%>
-            <li isSaved="<%=playlist.isSaved%>" isOwner="<%=playlist.isOwner%>" class="playlist interactable box" value="<%=playlist.id%>">
-                <img class="list-item-img" src="../<%=playlist.image_url%>" alt="">
-                <a href="../playlists/<%=playlist.id%>">
-                    <%=playlist.title%>
-                </a>
-
-                <% if(playlist.isOwner){%>
-                <button id="rmv-track-from-playlist" class="icon clickable" title="Remove from Playlist" value="<%=playlist.id%>">
-                    <i class="fa-solid fa-minus"></i>
-                </button>
+                <% if(loggedIn){ %>
+                    <button id="add-to-playlist" class="audio-player-btn" title="Add to Playlist">
+                        <i class="fa-regular fa-file-audio"></i>
+                    </button> 
                 <%};%>
-            </li>
-        <%};%>
-    </ul>
-    <%};%>
-    
-    <input id="is-liked" type="hidden" value="<%=isLiked%>">
-    <input id="loggin-flag" type="hidden" value="<%=loggedIn%>">
 
-    <%- include('components/contextmenus/playlist') %>
-    
-    <form class="hidden centered-pop-up" id="add-track-form" method="POST" action="/tracks/<%=track.id%>">
-        <%if(!cataloguePlaylists){%>
-            <div>You have no usable playlists in catalogue...</div>
-        <%} else {%>    
-            <select multiple name="playlists" id="select-playlists" class="dropdown-menu">
-            <%for(let playlist of cataloguePlaylists){%>
-                <option value="<%=playlist.id%>"><%=playlist.title%></option>
-            <%};%>    
-            </select>
-            <br>
-            <button class="btn" type="submit">Add</button>
-        <%};%> 
-    </form>
+                <% if(isOwner){ %>
+                    <button class="audio-player-btn" id="edit-btn" title="Edit">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="audio-player-btn" id="delete-btn" title ="Delete">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                <%};%>
 
-    <div class="hidden centered-pop-up pop-up-form" id="edit-track">
-        <label for="title-inp">Title</label>
-        <input type="text" name="title" id="title-inp" value="<%=track.title%>"><br>
+                <% if(track.owner_id){ %>
+                <a id="profile-btn" class="btn" href="/profiles/<%=track.owner_id%>" title="Profile">
+                    <i class="fa-regular fa-user"></i>
+                </a>
+                <%};%>
+            </div>
 
-        <label for="artists-inp">Artists</label>
-        <input type="text" name="artists" id="artists-inp" value="<%=track.artists%>"><br>
+            <% if(playlistsContainingTrack){%>
+            <h3 class="header">Playlists Containing Track</h3>
+            <ul id="playlists-list">
+                <%for(let playlist of playlistsContainingTrack){%>
+                    <li isSaved="<%=playlist.isSaved%>" isOwner="<%=playlist.isOwner%>" class="playlist interactable box" value="<%=playlist.id%>">
+                        <img class="list-item-img" src="../<%=playlist.image_url%>" alt="">
+                        <a href="../playlists/<%=playlist.id%>">
+                            <%=playlist.title%>
+                        </a>
 
-        <label for="genres-inp">Genres</label>
-        <input type="text" name="genres" id="genres-inp" value="<%=track.genres%>"><br>
+                        <% if(playlist.isOwner){%>
+                        <button id="rmv-track-from-playlist" class="icon clickable" title="Remove from Playlist" value="<%=playlist.id%>">
+                            <i class="fa-solid fa-minus"></i>
+                        </button>
+                        <%};%>
+                    </li>
+                <%};%>
+            </ul>
+            <%};%>
 
-        <label for="public-flag-inp">Is this track public?</label>
-        <input type="checkbox" name="public_flag" id="public-flag-inp" checked=<%=track.public_flag%>><br>
+            <ul id="artists-menu" class="custom-menu">
+            <% for (artist of track.artists.split(/[,;]/)) {%>
+                <li>
+                    <a href="../search?q=<%=artist%>&f=art,"><%=artist%></a>
+                </li>
+            <%};%>
+            </ul>
 
-        <label for="image-inp">Image</label>
-        <input type="file" name="image" id="image-inp"><br>
+            <ul id="genres-menu" class="custom-menu">
+            <% for (genre of track.genres.split(/[,;]/)) {%>
+                <li><a href="../search?q=<%=genre%>&f=gn,"><%=genre%></a></li>
+            <%};%>
+            </ul>
+            
+            <input id="is-liked" type="hidden" value="<%=isLiked%>">
+            <input id="loggin-flag" type="hidden" value="<%=loggedIn%>">
 
-        <button class="btn" id="edit-sbm-btn">Edit</button>
-    </div>
+            <%- include('components/contextmenus/playlist') %>
+            <form class="hidden centered-pop-up" id="add-track-form" method="POST" action="/tracks/<%=track.id%>">
+                <%if(!cataloguePlaylists){%>
+                    <div>You have no usable playlists in catalogue...</div>
+                <%} else {%>    
+                    <select multiple name="playlists" id="select-playlists" class="dropdown-menu">
+                    <%for(let playlist of cataloguePlaylists){%>
+                        <option value="<%=playlist.id%>"><%=playlist.title%></option>
+                    <%};%>    
+                    </select>
+                    <br>
+                    <button class="btn" type="submit">Add</button>
+                <%};%> 
+            </form>
 
-    <div id="overlay" class="overlay hidden"></div>
+            <div class="hidden centered-pop-up pop-up-form" id="edit-track">
+                <label for="title-inp">Title</label>
+                <input type="text" name="title" id="title-inp" value="<%=track.title%>"><br>
 
-    <script type="module" src="../public/scripts/script.js"></script>
-    <script type="module" src="../public/scripts/track-func.js"></script>
+                <label for="artists-inp">Artists</label>
+                <input type="text" name="artists" id="artists-inp" value="<%=track.artists%>"><br>
 
+                <label for="genres-inp">Genres</label>
+                <input type="text" name="genres" id="genres-inp" value="<%=track.genres%>"><br>
+
+                <label for="public-flag-inp">Is this track public?</label>
+                <input type="checkbox" name="public_flag" id="public-flag-inp" checked=<%=track.public_flag%>><br>
+
+                <label for="image-inp">Image</label>
+                <input type="file" name="image" id="image-inp"><br>
+
+                <button class="btn" id="edit-sbm-btn">Edit</button>
+            </div>
+
+            <div id="overlay" class="overlay hidden"></div>
+            <script type="module" src="../public/scripts/script.js"></script>
+            <script type="module" src="../public/scripts/track-func.js"></script>
+        </section>
+        <section></section>
+    </section>
 </body>
 </html>

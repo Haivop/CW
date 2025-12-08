@@ -40,8 +40,16 @@ module.exports.deletePlaylist = async (req, res) => {
 };
 
 
-module.exports.playlistPage = async (req, res) => {
-    const playlist = await Playlist.findByPk(req.params.playlistId)
+module.exports.playlistPage = async (req, res, next) => {
+    const playlistId = sanitizeHtml(req.params.playlistId);
+
+    if(!playlistId){
+        const error = new Error("Invalid playlist id");
+        error.status = 404;
+        next(error);
+    }
+
+    const playlist = await Playlist.findByPk(playlistId)
         .catch((err) => { console.log(err) });
 
     let tracks = await playlist.getTracks({ raw: true });
@@ -54,7 +62,16 @@ module.exports.playlistPage = async (req, res) => {
 
     const isOwner = req.session.user === playlist.owner_id;
 
-    res.render('playlist-page', {playlist: playlist.toJSON(), tracks, loggedIn: await isLoggedIn(req), isOwner});
+    let isSaved = false;
+    if(req.session.user){
+        const intersection = await PlaylistCatalogue.findOne(queryUser_PlaylistIdIntersection(req.session.user, playlistId))
+            .catch((err) => {
+                if(err) console.log(err);
+            })
+        isSaved = intersection ? true : false;
+    };
+
+    res.render('playlist-page', {playlist: playlist.toJSON(), tracks, loggedIn: await isLoggedIn(req), isOwner, isSaved});
 };
 
 
@@ -108,16 +125,17 @@ module.exports.addPlaylistToCatalogue = async (req, res) => {
         error.status = 404;
         next(error);
     }
-    const query = queryUser_PlaylistIdIntersection(req.session.user, playlistId)
+    const query = queryUser_PlaylistIdIntersection(req.session.user, playlistId);
     const isAlreadySaved = await PlaylistCatalogue.findOne(query);
-
 
     if(isAlreadySaved != null) await deletePlaylistFromCatalogue(req, res);
     else {
-        await PlaylistCatalogue.create(query)
-            .catch((err) => { console.log(err) });
+        await PlaylistCatalogue.create({
+            playlist_id: playlistId,
+            user_id: req.session.user
+        }).catch((err) => console.log(err));
 
-        if(req.session.user) res.status(200);
+        if(req.session.user) res.status(200).end();
     }
 };
 

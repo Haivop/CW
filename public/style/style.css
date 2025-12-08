@@ -215,7 +215,7 @@ header .btn{
 
 .grid{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 2fr 1fr;
     height: 100%;
     background-color: var(--background-colors);
 }
@@ -347,27 +347,37 @@ img.on-page{
     z-index: 1000;
     position: absolute;
     overflow: hidden;
-    border: 1px solid #CCC;
+    border: 1px solid var(--accent-color);
     white-space: nowrap;
     font-family: sans-serif;
-    background: #FFF;
-    color: #333;
+    background: var(--additional-color);
+    color: var(--text-color);
     border-radius: 5px;
     padding: 0;
 }
 
-/* Each of the items in the list */
 .custom-menu li {
+    display: flex;
     padding: 8px 12px;
     cursor: pointer;
     list-style-type: none;
-    transition: all .3s ease;
+    transition: all var(--animation-duration) ease;
     user-select: none;
 }
 
 .custom-menu li:hover {
-    background-color: #DEF;
+    background-color: var(--support-color);
+    opacity: 70;
 }
+
+.custom-menu li:has(a){
+    padding: 0px 0px;
+}
+
+.custom-menu li a {
+    padding: 8px 12px;
+}
+
 
 .hidden{
     display: none;
@@ -377,7 +387,7 @@ img.on-page{
     display: grid;
     grid-template-areas: 
     "img upper"
-    "img artists"
+    "img down"
     "img player";
 
     grid-template-columns: 1fr 9fr;
@@ -402,14 +412,10 @@ img.on-page{
     margin: 0;
 }
 
-.track-info > .artists{
-    grid-area: artists;
+.track-info > .down{
+    grid-area: down;
     padding-top: 0;
     padding-bottom: 0;
-}
-
-.track-info > .artists > a{
-    padding-right: var(--padding-mini);
 }
 
 .track-info > .audio-player{
@@ -445,8 +451,13 @@ img.on-page{
     margin: 0;
 }
 
+.center-align{
+    align-items: center;
+}
+
 .panel{
     display: flex;
+    align-items: center;
     background-color: var(--additional-color);
 }
 
@@ -502,6 +513,7 @@ img.on-page{
 }
 
 #add-track-form > select{
+    background-color: var(--background-color);
     border: 1px var(--main-color);
     padding: var(--padding-main);
     border-radius: var(--radius);
@@ -529,14 +541,7 @@ img.on-page{
 }
 
 #upload-track{
-    display: flex;
-    flex-direction: column;
     align-items: center;
-}
-
-#upload-track form{
-    display: flex;
-    flex-direction: column;
 }
 
 #upload-track a{
@@ -671,9 +676,35 @@ img.on-page{
     opacity: 70%;
 }
 
+#track-page{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
 #playlist-page{
     justify-content: center;
     width: 100%;
+}
+
+#playlist-page > div{
+    display: grid;
+    grid-template-areas: 
+    "img controls"
+    "list list";
+    grid-template-columns: auto 1fr;
+    min-width: 50vw;
+}
+
+#playlist-page > img{
+    grid-area: img;
+}
+
+#track-list{
+    grid-area: list;
+}
+
+#playlist-controls{
+    grid-area: controls;
 }
 
 .icon{
@@ -696,4 +727,60 @@ img.on-page{
 
 .pop-up-form > *{
     margin: var(--margin);
+}
+
+#audio-player{
+    background-color: var(--additional-color);
+    color: var(--accent-color);
+    padding: var(--padding-main);
+    margin-top: var(--margin);
+    width: max-content;
+    border: 1px var(--accent-color) solid;
+    border-radius: var(--radius);
+}
+
+#audio-duration{
+    align-items: center;
+}
+
+#audio-player input[type="range"]{
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    padding: 0;
+    margin: var(--margin);
+    width: 15rem;
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+
+#audio-player input[type="range"]::-webkit-slider-runnable-track{
+    background-color: var(--background-color);
+    border-radius: var(--radius);
+    color: var(--background-color);
+    height: 0.3rem;
+}
+
+input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: grab;
+    margin-top: -5px;
+    height: 1rem;
+    width: 1rem;
+    border: 1px var(--accent-color) solid;
+    border-radius: 50%;
+    background-color: var(--support-color);
+}
+
+input[type="range"]::-webkit-slider-thumb:active{
+    cursor: grabbing;
+    outline: 1px solid var(--accent-color);
+    outline-offset: 1px;
+}
+
+.hidden{
+    display: none;
 }

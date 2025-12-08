@@ -1,13 +1,5 @@
 export const base_url = "http://localhost:3000";
 
-function register(){
-    window.location.assign(base_url + "/sign-up")
-}
-
-function prevPage(){
-    window.history.back();
-}
-
 document.addEventListener("contextmenu", (event) => {
     event.preventDefault();
 });
@@ -21,6 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.assign(base_url.concat("/tracks/" + event.target.attributes.value.value));
     });
 
+    $(".box.profile").bind("click", (event) => {
+        window.location.assign(base_url.concat("/profiles/" + event.target.attributes.value.value));
+    });
+
+
     const logoutButton = document.getElementById("logout")
     if(logoutButton){
         logoutButton.addEventListener("click", (event) => {
@@ -33,4 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }).then(() => window.location.reload());
         });
     }
+
+    document.getElementById("cancel").addEventListener("click", () => {
+        window.history.back();
+    });
 });

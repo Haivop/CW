@@ -32,6 +32,7 @@ module.exports.queryUser_TrackIdIntersection = (compareUserId, compareTrackId) =
 };
 
 module.exports.queryUser_PlaylistIdIntersection = (compareUserId, comparePlaylistId) => {
+    console.log(compareUserId, comparePlaylistId);
     compareUserId = compareUserId !== undefined ? compareUserId : null;
     return {
         where: {

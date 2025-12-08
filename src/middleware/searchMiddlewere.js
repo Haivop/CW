@@ -59,7 +59,7 @@ module.exports.search = async (req, res) => {
             where: {
                 username: substringSearch,
             },
-            attributes: ['id', 'username'],
+            attributes: ['id', 'username', 'avatar_url'],
         }).catch((err) => {
             if(err) console.log(err);
         });

@@ -61,11 +61,13 @@ module.exports.trackPage = async (req, res) => {
             if(err) console.log(err);
         });
 
-    const cataloguePlaylists = createdPlaylists.concat(savedPlaylists);
-    console.log(cataloguePlaylists);
-
+    let cataloguePlaylists = createdPlaylists.concat(savedPlaylists);
     let playlistsContainingTrack = await track.getPlaylists({raw: true});
+
     playlistsContainingTrack = await appendPlaylistsMeta(userId, playlistsContainingTrack);
+    cataloguePlaylists = cataloguePlaylists.filter(
+        (playlist) => !playlistsContainingTrack
+            .some(containingTrack => playlist.id === containingTrack.id));
 
     const isLiked = await checkIsLiked(userId, trackId);
     const isOwner = track.owner_id === userId;
