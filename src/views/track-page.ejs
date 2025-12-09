@@ -24,18 +24,16 @@
             </div>
             
             <div class="panel">
-                <div class="flex-row center-align mr">
-                    <button class="audio-player-btn" id="like-btn" title="Like">
-                        <%if(isLiked){%>
-                        <i class="fa-solid fa-heart"></i>
-                        <%} else {%> 
-                        <i class="fa-regular fa-heart"></i>
-                        <%};%> 
-                    </button> | <span><%=track.likes%></span>
-                </div>
-
-
                 <% if(loggedIn){ %>
+                    <div class="flex-row center-align mr">
+                        <button class="audio-player-btn" id="like-btn" title="Like">
+                            <%if(isLiked){%>
+                            <i class="fa-solid fa-heart"></i>
+                            <%} else {%> 
+                            <i class="fa-regular fa-heart"></i>
+                            <%};%> 
+                        </button> | <span><%=track.likes%></span>
+                    </div>
                     <button id="add-to-playlist" class="audio-player-btn" title="Add to Playlist">
                         <i class="fa-regular fa-file-audio"></i>
                     </button> 

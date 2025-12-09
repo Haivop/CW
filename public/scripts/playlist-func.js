@@ -52,7 +52,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const audios = document.querySelectorAll("audio.in-playlist");
     const audioPlayerContainer = document.getElementById('audio-player');
     const audioDurationSlider = document.querySelector("#audio-duration > input");
-    const volumeSlider = document.querySelector("#audio-volume > input");
     const durationDisplay = document.getElementById("max-duration");
     const currentDuration = document.getElementById("current-duration");
 
@@ -182,7 +181,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             method: "DELETE",
         }).catch((err) => {
             if(err) console.error(err);
-        }).then(() => window.location.reload());
+        }).then(() => window.location.replace(base_url + "/"));
     });
 
     document.getElementById("remove-track-from-playlist-btn").addEventListener("click", () => {

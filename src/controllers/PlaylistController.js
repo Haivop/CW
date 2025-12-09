@@ -31,12 +31,14 @@ module.exports.createPlaylist = async (req, res) => {
 
 module.exports.deletePlaylist = async (req, res) => {
     if(!req.session.user) res.status(403).end();
-    const playlistId = req.params.playlistId;
+    const playlistId = sanitizeHtml(req.params.playlistId);
     
-    await Playlist.destroy(queryById(playlistId)).catch((err) => { console.log(err) });
+    const playlist = await Playlist.findByPk(playlistId).catch((err) => { console.log(err) });
+    if(req.session.user !== playlist.owner_id) res.status(403).end();
 
-    if(req.originalUrl.match(/\/playlists/)) res.status(204).redirect("/");
-    else res.status(204).end();
+    playlist.destroy().catch((err) => { console.log(err) });
+
+    if(req.session.user) res.status(204).end();
 };
 
 
@@ -51,6 +53,12 @@ module.exports.playlistPage = async (req, res, next) => {
 
     const playlist = await Playlist.findByPk(playlistId)
         .catch((err) => { console.log(err) });
+
+    if(!playlist){
+        const error = new Error("Invalid playlist id");
+        error.status = 404;
+        next(error);
+    }
 
     let tracks = await playlist.getTracks({ raw: true });
     const likedTracks = await getLikedTracks(querySaved(req.session.user));

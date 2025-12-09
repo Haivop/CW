@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if(
             loginFlag === "true" && 
             button.hasClass("hidden") &&
-            isOwnerFlag === "true"
+            isOwnerFlag === true
         ) {
             button.removeClass("hidden");
         } else if (
@@ -103,6 +103,6 @@ async function downloadTrack(href){
 async function deleteTrack(href){
     fetch(base_url + href, {
         method: "DELETE"
-    }).then(() => window.location.reload());
+    })//.then(() => window.location.reload());
 }
 

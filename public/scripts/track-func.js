@@ -1,6 +1,12 @@
 import { base_url } from "./script.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+    const addToPLaylistBtn = document.getElementById("add-to-playlist");
+    const removeFromPlaylistBtn = document.getElementById("rmv-track-from-playlist");
+    const likeBtn = document.getElementById("like-btn");
+    const deleteBtn = document.getElementById("delete-btn");
+    const editBtn = document.getElementById("edit-btn");
+
     $("#artists-menu-toggle").bind("click", function (event) {
         $("#artists-menu").finish().toggle(100).
             css({
@@ -27,22 +33,60 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     });
 
-    document.getElementById("like-btn").addEventListener("click", (event) => {
-        fetch(window.location.href, {
-                method: 'PATCH',
-        }).then(() => {window.location.reload()});
-    });
+    if(likeBtn){
+        likeBtn.addEventListener("click", (event) => {
+            fetch(window.location.href, {
+                    method: 'PATCH',
+            }).then(() => {window.location.reload()});
+        });
+    }
+    
 
-    document.getElementById("add-to-playlist").addEventListener("click", (event) => {
-        $("#add-track-form").toggle(100);
-        $("#overlay").toggle(1);
-    });
+    if(addToPLaylistBtn){
+        addToPLaylistBtn.addEventListener("click", (event) => {
+            $("#add-track-form").toggle(100);
+            $("#overlay").toggle(1);
+        });
+    }
 
+    if(deleteBtn){
+        deleteBtn.addEventListener("click", (event) => {
+            fetch(window.location.href, {
+                method: 'DELETE',
+            })
+            .catch((err) => console.log(err))
+            .then(() => {
+                window.location.replace(base_url + "/");
+            });
+        });
+    };
 
-    document.getElementById("edit-btn").addEventListener("click", (event) => {
-        $("#edit-track").toggle(100);
-        $("#overlay").toggle(1);
-    });
+    if(editBtn){
+        editBtn.addEventListener("click", (event) => {
+            $("#edit-track").toggle(100);
+            $("#overlay").toggle(1);
+        });
+    }
+
+    if(removeFromPlaylistBtn){
+        removeFromPlaylistBtn.addEventListener("click", (event) => {
+            const content = {
+                playlists: event.currentTarget.value
+            }
+
+            console.log(content)
+            fetch(window.location.href, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(content),
+            })
+            .catch((err) => console.log(err))
+            .then(() => window.location.reload());
+        });
+    }
+
 
     $(document).bind("mousedown", function (e) {
         if (!$(e.target).parents("#add-track-form").length > 0) {
@@ -55,16 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!$(e.target).parents("#edit-track").length > 0 && !$(e.target).parents("#add-track-form").length > 0){
             $("#overlay").hide(1);
         };
-    });
-
-    document.getElementById("delete-btn").addEventListener("click", (event) => {
-        fetch(window.location.href, {
-            method: 'DELETE',
-        })
-        .catch((err) => console.log(err))
-        .then(() => {
-            window.location.replace(base_url + "/");
-        });
     });
 
     document.getElementById("edit-sbm-btn").addEventListener("click", (event) => {
@@ -89,20 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }).then(() => window.location.reload())
         .catch((err) => console.log(err))
     });
-
-    document.getElementById("rmv-track-from-playlist").addEventListener("click", (event) => {
-        const content = {
-            playlists: event.currentTarget.value
-        }
-        fetch(window.location.href, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(content),
-        })
-        .catch((err) => console.log(err))
-        .then(() => window.location.reload());
-    });
 });
+
+
 

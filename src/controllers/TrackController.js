@@ -32,7 +32,8 @@ module.exports.uploadTrack = async (req, res) => {
     const audioPath = audio.path;
     const owner_id = req.session.user;
 
-    await Track.create({owner_id, title, artists, genres, audio_url: audioPath, image_url: imagePath});
+    await Track.create({owner_id, title, artists, genres, audio_url: audioPath, image_url: imagePath})
+        .catch((err) => console.log(err));
 
     res.redirect("/");
 };
@@ -52,7 +53,7 @@ module.exports.trackPage = async (req, res) => {
 
     const userId = req.session ? req.session.user : null;
 
-    const createdPlaylists = await Playlist.findAll(queryOwned(userId))
+    let createdPlaylists = await Playlist.findAll(queryOwned(userId))
         .catch((err) => {
             if(err) console.log(err);
         });
@@ -60,6 +61,8 @@ module.exports.trackPage = async (req, res) => {
         .catch((err) => {
             if(err) console.log(err);
         });
+
+    createdPlaylists = createdPlaylists.filter((playlist) => !savedPlaylists.some((savedPlaylist) => savedPlaylist.id === playlist.id));
 
     let cataloguePlaylists = createdPlaylists.concat(savedPlaylists);
     let playlistsContainingTrack = await track.getPlaylists({raw: true});
@@ -90,11 +93,8 @@ module.exports.addTrackToPlaylists = async (req, res) => {
     if(!Array.isArray(req.body.playlists)) playlistsIds_Array.push(req.body.playlists);
     else playlistsIds_Array = req.body.playlists
 
-    console.log(playlistsIds_Array);
-
     const track_SqlizeObject = await Track.findByPk(req.params.trackId);
     const playlistsContainingTrack = await track_SqlizeObject.getPlaylists();
-    console.log(playlistsContainingTrack);
 
     for(let playlist of playlistsContainingTrack){
         if(!playlistsIds_Array.includes(playlist.getDataValue("id"))) continue;
@@ -108,7 +108,7 @@ module.exports.addTrackToPlaylists = async (req, res) => {
         await track_SqlizeObject.addPlaylist(playlist_SqlizeObject);
     };
 
-    if(track_SqlizeObject.owner_id === req.session.user) res.redirect(req.originalUrl);
+    if(req.session.user) res.redirect(req.originalUrl);
 }
 
 module.exports.like = async (req, res, next) => {
@@ -142,8 +142,12 @@ module.exports.deleteTrack = async (req, res) => {
     const trackId = sanitizeHtml(req.params.trackId);
 
     const track = await Track.findByPk(trackId);
-    await track.destroy();
-    if(req.session.user) res.status(204).end();
+
+    if(!(req.session.user === track.owner_id)) res.status(403).end();
+    else {
+        await track.destroy();
+        res.status(204).end();
+    }
 }
 
 module.exports.editTrack = async (req, res) => {

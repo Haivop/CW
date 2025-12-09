@@ -101,7 +101,7 @@ module.exports.signUpPage = async (req, res) => {
 };
 
 
-module.exports.signUp = async (req, res) => {
+module.exports.signUp = async (req, res, next) => {
     const SALT_LENGTH = 64;
     const BYTE_TO_STRING_ENCODING = "hex";
 
@@ -121,7 +121,7 @@ module.exports.signUp = async (req, res) => {
         password_salt: salt,
     }).catch(
         (err) => console.log("Error while creating user account" + err)
-    ).then(this.login(req, res));
+    ).then(this.login(req, res, next));
 }
 
 

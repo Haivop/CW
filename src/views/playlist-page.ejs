@@ -24,8 +24,8 @@
                     </button>
 
                     <% if(loggedIn){ %>
-                        <% const intent = isSaved ? "Delete" : "Add" %>
-                        <button id="add-playlist-btn" class="audio-player-btn" title="<%=intent%> Playlist to Catalogue">
+                        <% const intent = isSaved ? ["Delete", "from"] : ["Add", "to"] %>
+                        <button id="add-playlist-btn" class="audio-player-btn" title="<%=intent[0]%> Playlist <%=intent[1]%> Catalogue">
                             <% if(!isSaved){ %>
                             <i class="fa-solid fa-plus"></i> 
                             <%} else {%>

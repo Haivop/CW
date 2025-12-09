@@ -98,7 +98,7 @@ async function downloadPlaylist(href){
 async function savePlaylist(href){
     fetch(base_url + href, {
         method: "POST"
-    }).then(console.log("saved"));
+    }).then(() => window.location.reload());
 }
 
 async function deletePlaylist(href){

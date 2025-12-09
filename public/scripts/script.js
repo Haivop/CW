@@ -30,8 +30,4 @@ document.addEventListener("DOMContentLoaded", () => {
             }).then(() => window.location.reload());
         });
     }
-
-    document.getElementById("cancel").addEventListener("click", () => {
-        window.history.back();
-    });
 });
